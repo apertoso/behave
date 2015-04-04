@@ -12,6 +12,7 @@ from six.moves import configparser
 
 from behave.model import FileLocation, ScenarioOutline
 from behave.reporter.junit import JUnitReporter
+from behave.reporter.livingdoc import LivingDocReporter
 from behave.reporter.summary import SummaryReporter
 from behave.tag_expression import TagExpression
 from behave.formatter.base import StreamOpener
@@ -114,6 +115,11 @@ options = [
      dict(metavar='PATH', dest='junit_directory',
           default='reports',
           help="""Directory in which to store JUnit reports.""")),
+
+    (('--livingdoc-directory',),
+     dict(metavar='PATH', dest='livingdoc_directory',
+          default='reports',
+          help="""Directory in which to store Living Documentation reports.""")),
 
     ((),  # -- CONFIGFILE only
      dict(dest='default_format',
@@ -513,6 +519,7 @@ class Configuration(object):
         steps_catalog=False,
         summary=True,
         junit=False,
+        livingdoc=False,
         stage=None,
         userdata={},
         # -- SPECIAL:
@@ -620,6 +627,13 @@ class Configuration(object):
             self.stderr_capture = True
             self.log_capture = True
             self.reporters.append(JUnitReporter(self))
+
+        if self.livingdoc:
+            self.stdout_capture = True
+            self.stderr_capture = True
+            self.log_capture = True
+            self.reporters.append(LivingDocReporter(self))
+
         if self.summary:
             self.reporters.append(SummaryReporter(self))
 
