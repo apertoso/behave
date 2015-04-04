@@ -262,6 +262,14 @@ options = [
      dict(action='store_true', dest='summary',
           help="""Display the summary at the end of the run.""")),
 
+    (('--no-livingdoc',),
+     dict(action='store_false', dest='livingdoc',
+          help="""Don't create Living Documentation from output""")),
+
+    (('--livingdoc',),
+     dict(action='store_true', dest='livingdoc',
+          help="""Create Living Documentation from output""")),
+
     (('-o', '--outfile'),
      dict(action='append', dest='outfiles', metavar='FILE',
           help="Write to specified file instead of stdout.")),
