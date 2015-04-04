@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <h1>Features</h1>
+    <ul>
+    {% for feature in features %}
+        <li><a href="{{ feature['link'] }}">{{ feature['name'] }} ({{ feature['status'] }})</a> - {{ feature['file'] }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+

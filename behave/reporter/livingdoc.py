@@ -3,7 +3,8 @@
 from __future__ import absolute_import
 import os.path
 import codecs
-import sys
+import sys, errno, os
+from jinja2 import Environment, FileSystemLoader
 from xml.etree import ElementTree
 from behave.reporter.base import Reporter
 from behave.model import Scenario, ScenarioOutline, Step
@@ -93,6 +94,8 @@ class LivingDocReporter(Reporter):
     show_multiline = True
     show_timings   = True     # -- Show step timings.
     show_tags      = True
+    jinja_env = Environment(loader=FileSystemLoader(os.getcwd()+'/behave/reporter/templates'))
+    feature_links = []
 
     def make_feature_filename(self, feature):
         filename = None
@@ -138,12 +141,34 @@ class LivingDocReporter(Reporter):
         if not os.path.exists(self.config.livingdoc_directory):
             # -- ENSURE: Create multiple directory levels at once.
             os.makedirs(self.config.livingdoc_directory)
+        report_dirname = self.config.livingdoc_directory + '/features'
+        try:
+            os.makedirs(report_dirname)
+        except OSError as exc:
+            if exc.errno  == errno.EEXIST and os.path.isdir(report_dirname):
+                pass
+            else:
+                raise
 
-        tree = ElementTreeWithCDATA(suite)
-        report_dirname = self.config.livingdoc_directory
-        report_basename = u'TESTS-%s.xml' % feature_filename
+        report_basename = u'%s.html' % feature_filename
         report_filename = os.path.join(report_dirname, report_basename)
-        tree.write(codecs.open(report_filename, "wb"), "UTF-8")
+        self.feature_links.append({
+            'name': feature.name,
+            'status': feature.status,
+            'file': feature_filename,
+            'link': 'features/'+report_basename
+        })
+        feature_html = self.jinja_env.get_template('feature.html')
+        with open(report_filename, 'wb') as f:
+            f.write(feature_html.render(feature=feature))
+
+
+    def end(self):
+        index_filename = self.config.livingdoc_directory + '/index.html'
+        index_html = self.jinja_env.get_template('index.html')
+        with open(index_filename, 'wb') as f:
+            f.write(index_html.render(features=self.feature_links))
+
 
     # -- MORE:
     @staticmethod

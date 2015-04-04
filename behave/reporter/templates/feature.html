@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <h1>{{ feature.name }} <small>{{ feature.filename }} - {{ feature.status }}</small></h1>
+    <p><strong>Tags: </strong>{% for tag in feature.tags %} <a href="/tags/{{ tag }}.html">{{ tag}}</a> {% endfor %}</p>
+    <p>{% for description in feature.description %}{{description}}<br>{% endfor %}</p>
+    <h2>Scenarios</h2>
+    <div class="container">
+        {% for scenario in feature.scenarios %}
+        <div class="row">
+            <h3>{{ scenario.name }} <small>{{ scenario.location.filename }}:{{ scenario.location.line}} - {{ scenario.status }}</small></h3>
+            <p><strong>Tags:</strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html">{{ tag }}</a> {% endfor %}</p>
+            {% for step in scenario.steps %}
+                <p><strong>{{ step.keyword }}</strong> {{ step.name }} <small>{{ step.location.filename }}:{{ step.location.line}} - {{ step.status }}</small></p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
