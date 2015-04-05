@@ -96,6 +96,9 @@ class LivingDocReporter(Reporter):
     show_tags      = True
     jinja_env = Environment(loader=FileSystemLoader(os.getcwd()+'/behave/reporter/templates'))
     feature_links = []
+    feature_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
+    scenario_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
+    step_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'undefined': 0, 'untested': 0}
 
     def make_feature_filename(self, feature):
         filename = None
@@ -112,6 +115,7 @@ class LivingDocReporter(Reporter):
 
     # -- REPORTER-API:
     def feature(self, feature):
+        self.feature_summary[feature.status or 'skipped'] += 1
         feature_filename  = self.make_feature_filename(feature)
         classname = feature_filename
         report = FeatureReportData(feature, feature_filename)
@@ -132,12 +136,6 @@ class LivingDocReporter(Reporter):
         for testcase in report.testcases:
             suite.append(testcase)
 
-        suite.set(u'tests', _text(report.counts_tests))
-        suite.set(u'errors', _text(report.counts_errors))
-        suite.set(u'failures', _text(report.counts_failed))
-        suite.set(u'skipped', _text(report.counts_skipped))  # WAS: skips
-        suite.set(u'time', _text(round(feature.duration, 6)))
-
         if not os.path.exists(self.config.livingdoc_directory):
             # -- ENSURE: Create multiple directory levels at once.
             os.makedirs(self.config.livingdoc_directory)
@@ -156,7 +154,7 @@ class LivingDocReporter(Reporter):
             'name': feature.name,
             'status': feature.status,
             'file': feature_filename,
-            'link': 'features/'+report_basename
+            'link': report_basename
         })
         feature_html = self.jinja_env.get_template('feature.html')
         with open(report_filename, 'wb') as f:
@@ -164,10 +162,23 @@ class LivingDocReporter(Reporter):
 
 
     def end(self):
+        src = os.getcwd() + '/behave/reporter/templates/static/'
+        dst = self.config.livingdoc_directory + '/static/'
+        os.system("cp -R {src} {dst}".format(src=src, dst=dst))
+        feature_index_filename = self.config.livingdoc_directory + '/features/_index.html'
+        feature_index_html = self.jinja_env.get_template('feature_index.html')
         index_filename = self.config.livingdoc_directory + '/index.html'
         index_html = self.jinja_env.get_template('index.html')
+        stats = [
+            {'name': 'Features', 'summary': self.feature_summary},
+            {'name': 'Scenarios', 'summary': self.scenario_summary},
+            {'name': 'Steps', 'summary': self.step_summary}
+        ]
+        with open(feature_index_filename, 'wb') as f:
+            f.write(feature_index_html.render(features=self.feature_links))
         with open(index_filename, 'wb') as f:
-            f.write(index_html.render(features=self.feature_links))
+            f.write(index_html.render(stats=stats,
+                                      company_name='LivingDocReporter'))
 
 
     # -- MORE:
@@ -263,6 +274,9 @@ class LivingDocReporter(Reporter):
         """
         assert isinstance(scenario, Scenario)
         assert not isinstance(scenario, ScenarioOutline)
+        self.scenario_summary[scenario.status or 'skipped'] += 1
+        for step in scenario.steps:
+            self.step_summary[step.status or 'skipped'] += 1
         report.counts_tests += 1
         classname = report.classname
         feature   = report.feature
