@@ -46,13 +46,13 @@
         {% for scenario in feature.scenarios %}
             {% if scenario.type=='scenario' %}
                 {% if scenario.status=='passed' %}
-                <div class="panel panel-success">
+                <div class="panel panel-success" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                 {% if scenario.status=='failed' %}
-                <div class="panel panel-danger">
+                <div class="panel panel-danger" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                 {% if scenario.status not in ['passed', 'failed'] %}
-                <div class="panel panel-warning">
+                <div class="panel panel-warning" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                     <div class="panel-heading">
                         <h3 class="panel-title"><span class="text-muted">Scenario:</span> {{ scenario.name }} <span class="pull-right">{{ scenario.status }}</span></h3>
@@ -94,13 +94,13 @@
             {% endif %}
             {% if scenario.type=='scenario_outline' %}
                 {% if scenario.status=='passed' %}
-                <div class="panel panel-success">
+                <div class="panel panel-success" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                 {% if scenario.status=='failed' %}
-                <div class="panel panel-danger">
+                <div class="panel panel-danger" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                 {% if scenario.status not in ['passed', 'failed'] %}
-                <div class="panel panel-warning">
+                <div class="panel panel-warning" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                     <div class="panel-heading">
                         <h3 class="panel-title"><span class="text-muted">Scenario Outline:</span> <span class="scenario_title">{{ scenario.name | e }}</span> <span class="pull-right">{{ scenario.status }}</span></h3>
@@ -165,30 +165,32 @@
                             {% for scen in scenario.scenarios %}
                                 <div class="container-fluid" id="example_{{ scen._row.id | replace('.', '_') }}">
                                 {% for step in scen.steps %}
-                                    <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
-                                    {% if step.text %}
-                                    <pre>{{ step.text | e }}</pre>
-                                    {% endif %}
-                                    {% if step.table %}
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    {% for heading in step.table.headings %}
-                                                        <th>{{ heading | e }}</th>
-                                                    {% endfor %}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for row in step.table.rows %}
+                                    <div class="container-fluid">
+                                        <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
+                                        {% if step.text %}
+                                        <pre>{{ step.text | e }}</pre>
+                                        {% endif %}
+                                        {% if step.table %}
+                                            <table class="table table-hover">
+                                                <thead>
                                                     <tr>
-                                                       {% for cell in row.cells %}
-                                                            <td>{{ cell | e }}</td>
-                                                       {% endfor %}
+                                                        {% for heading in step.table.headings %}
+                                                            <th>{{ heading | e }}</th>
+                                                        {% endfor %}
                                                     </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in step.table.rows %}
+                                                        <tr>
+                                                           {% for cell in row.cells %}
+                                                                <td>{{ cell | e }}</td>
+                                                           {% endfor %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+                                     </div>
                                 {% endfor %}
                                 </div>
                             {% endfor %}
