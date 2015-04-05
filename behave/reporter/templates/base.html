@@ -31,6 +31,23 @@
     <div class="container" style="padding-top: 50px;">
         {% block content %}{% endblock %}
     </div>
+    <script src="/static/jquery.js" type="text/javascript"></script>
     <script src="/static/bootstrap.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.scenario_outline_examples >tbody tr').click(function(){
+                var i = null, ec = null, tc = null;
+                i = $(this).attr('data-id');
+                ec = $(this).parents('.panel-body').find('.examples');
+                var e = $(this).parents('.panel-body').find('#'+ i);
+                tc = $(this).parents('.panel').find('.scenario_title');
+                var t = $(this).parents('.panel-body').find('.example_title #title_'+i);
+                ec.empty();
+                var e1 = e;
+                ec.append(e1.clone());
+                tc[0].innerHTML = t[0].innerHTML;
+            });
+        });
+    </script>
 </body>
 </html>

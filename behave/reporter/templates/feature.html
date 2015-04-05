@@ -103,42 +103,44 @@
                 <div class="panel panel-warning">
                 {% endif %}
                     <div class="panel-heading">
-                        <h3 class="panel-title"><span class="text-muted">Scenario Outline:</span> {{ scenario.name | e }} <span class="pull-right">{{ scenario.status }}</span></h3>
+                        <h3 class="panel-title"><span class="text-muted">Scenario Outline:</span> <span class="scenario_title">{{ scenario.name | e }}</span> <span class="pull-right">{{ scenario.status }}</span></h3>
                     </div>
-                    <div class="panel-body">
-                        {% for step in scenario.steps %}
-                            <div class="container-fluid">
-                            <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
-                            {% if step.text %}
-                                <pre>{{ step.text | e }}</pre>
-                            {% endif %}
-                            {% if step.table %}
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            {% for heading in step.table.headings %}
-                                                <th>{{ heading | e }}</th>
-                                            {% endfor %}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for row in step.table.rows %}
+                    <div class="panel-body" id="{{ loop.index }}_content">
+                        <div class="{{ loop.index }}_example examples">
+                            {% for step in scenario.steps %}
+                                <div class="container-fluid step">
+                                <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
+                                {% if step.text %}
+                                    <pre>{{ step.text | e }}</pre>
+                                {% endif %}
+                                {% if step.table %}
+                                    <table class="table table-hover">
+                                        <thead>
                                             <tr>
-                                               {% for cell in row.cells %}
-                                                    <td>{{ cell | e }}</td>
-                                               {% endfor %}
+                                                {% for heading in step.table.headings %}
+                                                    <th>{{ heading | e }}</th>
+                                                {% endfor %}
                                             </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% endif %}
-                            </div>
-                        {% endfor %}
+                                        </thead>
+                                        <tbody>
+                                            {% for row in step.table.rows %}
+                                                <tr>
+                                                   {% for cell in row.cells %}
+                                                        <td>{{ cell | e }}</td>
+                                                   {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
                         {% if scenario.examples %}
-                            <div class="container-fluid">
+                            <div class="container-fluid" id="{{ loop.index }}_examples">
                             {% for example in scenario.examples %}
-                                <h3>Examples</h3>
-                                <table class="table">
+                                <h3>Examples <small class="pull-right">Click on a row to change scenario text</small></h3>
+                                <table class="table scenario_outline_examples table-hover">
                                     <thead>
                                         <tr>
                                             {% for header in example.table.headings %}
@@ -148,7 +150,7 @@
                                     </thead>
                                     <tbody>
                                         {% for row in example.table.rows %}
-                                            <tr>
+                                            <tr data-id="example_{{ row.id | replace('.', '_') }}">
                                                 {% for cell in row.cells %}
                                                     <th>{{ cell }}</th>
                                                 {% endfor %}
@@ -159,6 +161,43 @@
                             {% endfor %}
                             </div>
                         {% endif %}
+                        <div class="hidden example_content">
+                            {% for scen in scenario.scenarios %}
+                                <div class="container-fluid" id="example_{{ scen._row.id | replace('.', '_') }}">
+                                {% for step in scen.steps %}
+                                    <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
+                                    {% if step.text %}
+                                    <pre>{{ step.text | e }}</pre>
+                                    {% endif %}
+                                    {% if step.table %}
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    {% for heading in step.table.headings %}
+                                                        <th>{{ heading | e }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in step.table.rows %}
+                                                    <tr>
+                                                       {% for cell in row.cells %}
+                                                            <td>{{ cell | e }}</td>
+                                                       {% endfor %}
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="hidden example_title">
+                            {% for scen in scenario.scenarios %}
+                                <span id="title_example_{{ scen._row.id | replace('.', '_') }}">{{ scen.name }}</span>
+                            {% endfor %}
+                        </div>
                     </div>
                     <div class="panel-footer">
                         <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}{% if scenario.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}</span>{% endif %}</p>
