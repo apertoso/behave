@@ -1,22 +1,172 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
-    <h1>{{ feature.name }} <small>{{ feature.filename }} - {{ feature.status }}</small></h1>
-    <p><strong>Tags: </strong>{% for tag in feature.tags %} <a href="/tags/{{ tag }}.html">{{ tag}}</a> {% endfor %}</p>
-    <p>{% for description in feature.description %}{{description}}<br>{% endfor %}</p>
+    <h1><span class="text-muted">Feature:</span> {{ feature.name }} <span class="pull-right btn-lg {{ status }}">{{ feature['status'] }}</span></h1>
+    <hr>
+    <p><strong>File: </strong>{{ feature.filename }} {% if feature.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in feature.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag}}</span></a> {% endfor %}</span>{% endif %}</p>
+    <p>&nbsp;</p>
+    {% if feature.description %}
+    <h3>Description</h3>
+    <hr>
+    <p class="lead">{% for description in feature.description %}{{description}}<br>{% endfor %}</p>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if feature.background %}
+    <h3>Background</h3>
+    <hr>
+    {% for step in feature.background.steps %}
+        <p><strong>{{ step.keyword }}</strong> {{ step.name }} {% if step.status=='passed' %}<span class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>{% endif %}{% if step.status=='failed' %}<span class="pull-right"><i class="glyphicon glyphicon-remove"></i></span>{% endif %}</p>
+        {% if step.table %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for heading in step.table.headings %}
+                            <th>{{ heading }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in step.table.rows %}
+                        <tr>
+                           {% for cell in row.cells %}
+                                <td>{{ cell }}</td>
+                           {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endfor %}
+    <p>&nbsp;</p>
+    {% endif %}
+
     <h2>Scenarios</h2>
+    <hr>
     <div class="container">
         {% for scenario in feature.scenarios %}
-        <div class="row">
-            <h3>{{ scenario.name }} <small>{{ scenario.location.filename }}:{{ scenario.location.line}} - {{ scenario.status }}</small></h3>
-            <p><strong>Tags:</strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html">{{ tag }}</a> {% endfor %}</p>
-            {% for step in scenario.steps %}
-                <p><strong>{{ step.keyword }}</strong> {{ step.name }} <small>{{ step.location.filename }}:{{ step.location.line}} - {{ step.status }}</small></p>
-            {% endfor %}
-        </div>
+            {% if scenario.type=='scenario' %}
+                {% if scenario.status=='passed' %}
+                <div class="panel panel-success">
+                {% endif %}
+                {% if scenario.status=='failed' %}
+                <div class="panel panel-danger">
+                {% endif %}
+                {% if scenario.status not in ['passed', 'failed'] %}
+                <div class="panel panel-warning">
+                {% endif %}
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><span class="text-muted">Scenario:</span> {{ scenario.name }} <span class="pull-right">{{ scenario.status }}</span></h3>
+                    </div>
+                    <div class="panel-body">
+                        {% for step in scenario.steps %}
+                            <div class="container-fluid">
+                            <p><strong>{{ step.keyword }}</strong> {{ step.name }} {% if step.status=='passed' %}<span class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>{% endif %}{% if step.status=='failed' %}<span class="pull-right"><i class="glyphicon glyphicon-remove"></i></span>{% endif %}</p>
+                            {% if step.text %}
+                                <pre>{{ step.text}}</pre>
+                            {% endif %}
+                            {% if step.table %}
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            {% for heading in step.table.headings %}
+                                                <th>{{ heading }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in step.table.rows %}
+                                            <tr>
+                                               {% for cell in row.cells %}
+                                                    <td>{{ cell }}</td>
+                                               {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="panel-footer">
+                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}{% if scenario.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}</span>{% endif %}</p>
+                    </div>
+                </div>
+            {% endif %}
+            {% if scenario.type=='scenario_outline' %}
+                {% if scenario.status=='passed' %}
+                <div class="panel panel-success">
+                {% endif %}
+                {% if scenario.status=='failed' %}
+                <div class="panel panel-danger">
+                {% endif %}
+                {% if scenario.status not in ['passed', 'failed'] %}
+                <div class="panel panel-warning">
+                {% endif %}
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><span class="text-muted">Scenario Outline:</span> {{ scenario.name | e }} <span class="pull-right">{{ scenario.status }}</span></h3>
+                    </div>
+                    <div class="panel-body">
+                        {% for step in scenario.steps %}
+                            <div class="container-fluid">
+                            <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
+                            {% if step.text %}
+                                <pre>{{ step.text | e }}</pre>
+                            {% endif %}
+                            {% if step.table %}
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            {% for heading in step.table.headings %}
+                                                <th>{{ heading | e }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in step.table.rows %}
+                                            <tr>
+                                               {% for cell in row.cells %}
+                                                    <td>{{ cell | e }}</td>
+                                               {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                            </div>
+                        {% endfor %}
+                        {% if scenario.examples %}
+                            <div class="container-fluid">
+                            {% for example in scenario.examples %}
+                                <h3>Examples</h3>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            {% for header in example.table.headings %}
+                                                <th>{{ header }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in example.table.rows %}
+                                            <tr>
+                                                {% for cell in row.cells %}
+                                                    <th>{{ cell }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="panel-footer">
+                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}{% if scenario.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}</span>{% endif %}</p>
+                    </div>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>
 {% endblock %}
 {% block feature_active %} class="active"{% endblock %}
-

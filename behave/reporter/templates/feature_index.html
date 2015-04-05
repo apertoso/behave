@@ -6,7 +6,7 @@
         <h4>{{ title }}</h4>
         <ul>
         {% for feature in feature_list %}
-            <li><a href="{{ feature['link'] }}">{{ feature['name'] }} <span class="badge {{ feature['status_class']}}">{{ feature['status'] }}</span></a> - {{ feature['file'] }}.feature</li>
+            <li><a href="{{ feature['link'] }}">{{ feature['name'] }} <span class="badge pull-right {{ feature['status_class']}}">{{ feature['status'] }}</span></a> - <span class="text-muted">{{ feature['file'] }}.feature</span></li>
         {% endfor %}
         </ul>
     {% endfor %}

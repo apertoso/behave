@@ -168,6 +168,7 @@ class LivingDocReporter(Reporter):
         feature_html = self.jinja_env.get_template('feature.html')
         with open(report_filename, 'wb') as f:
             f.write(feature_html.render(feature=feature,
+                                        status=status_class,
                                         company_name='LivingDocReporter'))
 
 
