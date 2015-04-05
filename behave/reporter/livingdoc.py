@@ -12,6 +12,7 @@ from behave.formatter import ansi_escapes
 from behave.model_describe import ModelDescriptor
 from behave.textutil import indent, make_indentation, text as _text
 import six
+from collections import OrderedDict
 
 
 def CDATA(text=None):
@@ -95,7 +96,7 @@ class LivingDocReporter(Reporter):
     show_timings   = True     # -- Show step timings.
     show_tags      = True
     jinja_env = Environment(loader=FileSystemLoader(os.getcwd()+'/behave/reporter/templates'))
-    feature_links = []
+    feature_links = {}
     feature_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
     scenario_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
     step_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'undefined': 0, 'untested': 0}
@@ -150,15 +151,24 @@ class LivingDocReporter(Reporter):
 
         report_basename = u'%s.html' % feature_filename
         report_filename = os.path.join(report_dirname, report_basename)
-        self.feature_links.append({
+        status_class = 'btn-warning'
+        if feature.status == 'passed':
+            status_class = 'btn-success'
+        if feature.status == 'failed':
+            status_class = 'btn-danger'
+        if not feature.name[0] in self.feature_links:
+            self.feature_links[feature.name[0]] = []
+        self.feature_links[feature.name[0]].append({
             'name': feature.name,
             'status': feature.status,
+            'status_class': status_class,
             'file': feature_filename,
             'link': report_basename
         })
         feature_html = self.jinja_env.get_template('feature.html')
         with open(report_filename, 'wb') as f:
-            f.write(feature_html.render(feature=feature))
+            f.write(feature_html.render(feature=feature,
+                                        company_name='LivingDocReporter'))
 
 
     def end(self):
@@ -169,13 +179,14 @@ class LivingDocReporter(Reporter):
         feature_index_html = self.jinja_env.get_template('feature_index.html')
         index_filename = self.config.livingdoc_directory + '/index.html'
         index_html = self.jinja_env.get_template('index.html')
+        features_list = OrderedDict(sorted(self.feature_links.items()))
         stats = [
             {'name': 'Features', 'summary': self.feature_summary},
             {'name': 'Scenarios', 'summary': self.scenario_summary},
             {'name': 'Steps', 'summary': self.step_summary}
         ]
         with open(feature_index_filename, 'wb') as f:
-            f.write(feature_index_html.render(features=self.feature_links))
+            f.write(feature_index_html.render(features=features_list))
         with open(index_filename, 'wb') as f:
             f.write(index_html.render(stats=stats,
                                       company_name='LivingDocReporter'))

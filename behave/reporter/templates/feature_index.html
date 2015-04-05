@@ -2,11 +2,14 @@
 {% block content %}
 <div class="row">
     <h1>Features</h1>
-    <ul>
-    {% for feature in features %}
-        <li><a href="{{ feature['link'] }}">{{ feature['name'] }} ({{ feature['status'] }})</a> - {{ feature['file'] }}</li>
+    {% for title, feature_list in features.iteritems() %}
+        <h4>{{ title }}</h4>
+        <ul>
+        {% for feature in feature_list %}
+            <li><a href="{{ feature['link'] }}">{{ feature['name'] }} <span class="badge {{ feature['status_class']}}">{{ feature['status'] }}</span></a> - {{ feature['file'] }}.feature</li>
+        {% endfor %}
+        </ul>
     {% endfor %}
-    </ul>
 </div>
 {% endblock %}
 {% block feature_active %} class="active"{% endblock %}
