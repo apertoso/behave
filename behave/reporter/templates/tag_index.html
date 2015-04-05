@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <h1>Tags</h1>
+    {% for title, list in tags.iteritems() %}
+        <h3>{{ title }}</h3>
+        <hr>
+        <ul>
+        {% for item in list %}
+            <li><a href="/tags/{{ item }}.html">{{ item }}</a></li>
+        {% endfor %}
+        </ul>
+        <p>&nbsp;</p>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block tag_active %} class="active"{% endblock %}
+

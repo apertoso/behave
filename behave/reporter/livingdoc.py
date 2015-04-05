@@ -97,6 +97,7 @@ class LivingDocReporter(Reporter):
     show_tags      = True
     jinja_env = Environment(loader=FileSystemLoader(os.getcwd()+'/behave/reporter/templates'))
     feature_links = {}
+    tags = {}
     feature_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
     scenario_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
     step_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'undefined': 0, 'untested': 0}
@@ -125,8 +126,18 @@ class LivingDocReporter(Reporter):
         feature_name = feature.name or feature_filename
         suite.set(u'name', u'%s.%s' % (classname, feature_name))
 
+        for tag in feature.tags:
+            if tag not in self.tags:
+                self.tags[tag] = []
+            self.tags[tag].append(feature)
+
         # -- BUILD-TESTCASES: From scenarios
         for scenario in feature:
+            for tag in scenario.tags:
+                if tag not in self.tags:
+                    self.tags[tag] = []
+                self.tags[tag].append(scenario)
+
             if isinstance(scenario, ScenarioOutline):
                 scenario_outline = scenario
                 self._process_scenario_outline(scenario_outline, report)
@@ -140,17 +151,17 @@ class LivingDocReporter(Reporter):
         if not os.path.exists(self.config.livingdoc_directory):
             # -- ENSURE: Create multiple directory levels at once.
             os.makedirs(self.config.livingdoc_directory)
-        report_dirname = self.config.livingdoc_directory + '/features'
+        feature_dirname = self.config.livingdoc_directory + '/features'
         try:
-            os.makedirs(report_dirname)
+            os.makedirs(feature_dirname)
         except OSError as exc:
-            if exc.errno  == errno.EEXIST and os.path.isdir(report_dirname):
+            if exc.errno  == errno.EEXIST and os.path.isdir(feature_dirname):
                 pass
             else:
                 raise
 
-        report_basename = u'%s.html' % feature_filename
-        report_filename = os.path.join(report_dirname, report_basename)
+        feature_basename = u'%s.html' % feature_filename
+        feature_filename = os.path.join(feature_dirname, feature_basename)
         status_class = 'btn-warning'
         if feature.status == 'passed':
             status_class = 'btn-success'
@@ -163,12 +174,13 @@ class LivingDocReporter(Reporter):
             'status': feature.status,
             'status_class': status_class,
             'file': feature_filename,
-            'link': report_basename
+            'link': feature_basename
         })
         feature_html = self.jinja_env.get_template('feature.html')
-        with open(report_filename, 'wb') as f:
+        with open(feature_filename, 'wb') as f:
             f.write(feature_html.render(feature=feature,
                                         status=status_class,
+                                        path='/features/'+feature_basename,
                                         company_name='LivingDocReporter'))
 
 
@@ -180,12 +192,39 @@ class LivingDocReporter(Reporter):
         feature_index_html = self.jinja_env.get_template('feature_index.html')
         index_filename = self.config.livingdoc_directory + '/index.html'
         index_html = self.jinja_env.get_template('index.html')
+        tag_index_filename = self.config.livingdoc_directory + '/tags/_index.html'
+        tag_index_html = self.jinja_env.get_template('tag_index.html')
+        tag_html = self.jinja_env.get_template('tag.html')
         features_list = OrderedDict(sorted(self.feature_links.items()))
+        tags = {}
+        for k,v in self.tags.iteritems():
+            if k[0] not in tags:
+                tags[k[0]] = []
+            tags[k[0]].append(k)
+        tags_list = OrderedDict(sorted(tags.items()))
         stats = [
             {'name': 'Features', 'summary': self.feature_summary},
             {'name': 'Scenarios', 'summary': self.scenario_summary},
             {'name': 'Steps', 'summary': self.step_summary}
         ]
+
+        tag_dirname = self.config.livingdoc_directory + '/tags'
+        try:
+            os.makedirs(tag_dirname)
+        except OSError as exc:
+            if exc.errno  == errno.EEXIST and os.path.isdir(tag_dirname):
+                pass
+            else:
+                raise
+        # render a tag file for each tag which will contain the scenarios and features tagged with that tag
+        for tag,list in self.tags.iteritems():
+            filename = '{0}/tags/{1}.html'.format(self.config.livingdoc_directory, tag)
+            with open(filename, 'wb') as f:
+                f.write(tag_html.render(title=tag,
+                                        tags=list,
+                                        path='/tags/'+tag+'.html'))
+        with open(tag_index_filename, 'wb') as f:
+            f.write(tag_index_html.render(tags=tags_list))
         with open(feature_index_filename, 'wb') as f:
             f.write(feature_index_html.render(features=features_list))
         with open(index_filename, 'wb') as f:

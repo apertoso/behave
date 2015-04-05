@@ -3,10 +3,11 @@
 <div class="row">
     <h1>Features</h1>
     {% for title, feature_list in features.iteritems() %}
-        <h4>{{ title }}</h4>
+        <h3>{{ title }}</h3>
+        <hr>
         <ul>
         {% for feature in feature_list %}
-            <li><a href="{{ feature['link'] }}">{{ feature['name'] }} <span class="badge pull-right {{ feature['status_class']}}">{{ feature['status'] }}</span></a> - <span class="text-muted">{{ feature['file'] }}.feature</span></li>
+            <li><a href="{{ feature['link'] }}">{{ feature['name'] }} <span class="badge pull-right {{ feature['status_class']}}">{{ feature['status'] }}</span></a></li>
         {% endfor %}
         </ul>
     {% endfor %}

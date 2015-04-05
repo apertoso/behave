@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <h1><span class="text-muted">Tag:</span> {{ title }}</h1>
+    <hr>
+    <p>&nbsp;</p>
+    <h2>Features</h2>
+    <hr>
+    <ul>
+    {% for item in tags %}
+        {% if item.keyword=='Feature' %}
+          <li><a href="/{{ item.location.filename | replace('.feature', '') }}.html">{{ item.name }}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+    <h2>Scenarios</h2>
+    <hr>
+    {% for scenario in tags %}
+        {% if scenario.keyword in ['Scenario', 'Scenario Outline'] %}
+            <div class="container">
+                {% if scenario.type=='scenario' %}
+                    {% if scenario.status=='passed' %}
+                    <div class="panel panel-success" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                    {% endif %}
+                    {% if scenario.status=='failed' %}
+                    <div class="panel panel-danger" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                    {% endif %}
+                    {% if scenario.status not in ['passed', 'failed'] %}
+                    <div class="panel panel-warning" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                    {% endif %}
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><span class="text-muted">Scenario:</span> {{ scenario.name }} <span class="pull-right">{{ scenario.status }}</span></h3>
+                        </div>
+                        <div class="panel-body">
+                            {% for step in scenario.steps %}
+                                <div class="container-fluid">
+                                <p><strong>{{ step.keyword }}</strong> {{ step.name }} {% if step.status=='passed' %}<span class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>{% endif %}{% if step.status=='failed' %}<span class="pull-right"><i class="glyphicon glyphicon-remove"></i></span>{% endif %}</p>
+                                {% if step.text %}
+                                    <pre>{{ step.text}}</pre>
+                                {% endif %}
+                                {% if step.table %}
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                {% for heading in step.table.headings %}
+                                                    <th>{{ heading }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for row in step.table.rows %}
+                                                <tr>
+                                                   {% for cell in row.cells %}
+                                                        <td>{{ cell }}</td>
+                                                   {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="panel-footer">
+                            <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right">{% if scenario.tags %}<strong>Tags: </strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %} <a href="{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if scenario.type=='scenario_outline' %}
+                    {% if scenario.status=='passed' %}
+                    <div class="panel panel-success" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                    {% endif %}
+                    {% if scenario.status=='failed' %}
+                    <div class="panel panel-danger" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                    {% endif %}
+                    {% if scenario.status not in ['passed', 'failed'] %}
+                    <div class="panel panel-warning" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                    {% endif %}
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><span class="text-muted">Scenario Outline:</span> <span class="scenario_title">{{ scenario.name | e }}</span> <span class="pull-right">{{ scenario.status }}</span></h3>
+                        </div>
+                        <div class="panel-body" id="{{ loop.index }}_content">
+                            <div class="{{ loop.index }}_example examples">
+                                {% for step in scenario.steps %}
+                                    <div class="container-fluid step">
+                                    <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
+                                    {% if step.text %}
+                                        <pre>{{ step.text | e }}</pre>
+                                    {% endif %}
+                                    {% if step.table %}
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    {% for heading in step.table.headings %}
+                                                        <th>{{ heading | e }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in step.table.rows %}
+                                                    <tr>
+                                                       {% for cell in row.cells %}
+                                                            <td>{{ cell | e }}</td>
+                                                       {% endfor %}
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if scenario.examples %}
+                                <div class="container-fluid" id="{{ loop.index }}_examples">
+                                {% for example in scenario.examples %}
+                                    <h3>Examples <small class="pull-right">Click on a row to change scenario text</small></h3>
+                                    <table class="table scenario_outline_examples table-hover">
+                                        <thead>
+                                            <tr>
+                                                {% for header in example.table.headings %}
+                                                    <th>{{ header }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for row in example.table.rows %}
+                                                <tr data-id="example_{{ row.id | replace('.', '_') }}">
+                                                    {% for cell in row.cells %}
+                                                        <th>{{ cell }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="hidden example_content">
+                                {% for scen in scenario.scenarios %}
+                                    <div class="container-fluid" id="example_{{ scen._row.id | replace('.', '_') }}">
+                                    {% for step in scen.steps %}
+                                        <div class="container-fluid">
+                                            <p><strong>{{ step.keyword }}</strong> {{ step.name | e }}</p>
+                                            {% if step.text %}
+                                            <pre>{{ step.text | e }}</pre>
+                                            {% endif %}
+                                            {% if step.table %}
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            {% for heading in step.table.headings %}
+                                                                <th>{{ heading | e }}</th>
+                                                            {% endfor %}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for row in step.table.rows %}
+                                                            <tr>
+                                                               {% for cell in row.cells %}
+                                                                    <td>{{ cell | e }}</td>
+                                                               {% endfor %}
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            {% endif %}
+                                         </div>
+                                    {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="hidden example_title">
+                                {% for scen in scenario.scenarios %}
+                                    <span id="title_example_{{ scen._row.id | replace('.', '_') }}">{{ scen.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}{% if scenario.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}</span>{% endif %}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
+{% block tag_active %} class="active"{% endblock %}
