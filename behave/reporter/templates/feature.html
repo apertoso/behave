@@ -3,7 +3,7 @@
 <div class="row">
     <h1><span class="text-muted">Feature:</span> {{ feature.name }} <span class="pull-right btn-lg {{ status }}">{{ feature['status'] }}</span></h1>
     <hr>
-    <p><strong>File: </strong>{{ feature.filename }} {% if feature.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in feature.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag}}</span></a> {% endfor %}</span>{% endif %}</p>
+    <p><strong>File: </strong>{{ feature.filename }} {% if feature.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in feature.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag}}</span></a> {% endfor %}</span>{% endif %}</p>
     <p>&nbsp;</p>
     {% if feature.description %}
     <h3>Description</h3>
@@ -88,7 +88,7 @@
                         {% endfor %}
                     </div>
                     <div class="panel-footer">
-                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right">{% if scenario.tags %}<strong>Tags: </strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %} <a href="{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
+                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right">{% if scenario.tags %}<strong>Tags: </strong>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %} <a href="../{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
                     </div>
                 </div>
             {% endif %}
@@ -202,7 +202,7 @@
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}{% if scenario.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in scenario.tags %} <a href="/tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}</span>{% endif %}</p>
+                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}{% if scenario.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}</span>{% endif %}</p>
                     </div>
                 </div>
             {% endif %}
