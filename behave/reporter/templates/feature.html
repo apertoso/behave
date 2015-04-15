@@ -11,6 +11,16 @@
     <p class="lead">{% for description in feature.description %}{{description}}<br>{% endfor %}</p>
     <p>&nbsp;</p>
     {% endif %}
+    {%  if meta and 'links' in meta %}
+    <h3>Other Resources</h3>
+    <hr>
+    <ul>
+    {% for entry in meta['links'] %}
+        <li><a href="{{ entry['url'] }}">{{ entry['name'] }}</a></li>
+    {% endfor %}
+    </ul>
+    <p>&nbsp;</p>
+    {% endif %}
     {% if feature.background %}
     <h3>Background</h3>
     <hr>

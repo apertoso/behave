@@ -121,6 +121,10 @@ options = [
           default='reports',
           help="""Directory in which to store Living Documentation reports.""")),
 
+    (('--livingdoc-meta', ),
+     dict(metavar='PATH', dest='livingdoc_meta',
+          help="""File from which Living Documentation reporter can pull resources from""")),
+
     ((),  # -- CONFIGFILE only
      dict(dest='default_format',
           help="Specify default formatter (default: pretty).")),

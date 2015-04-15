@@ -7,6 +7,9 @@
         <hr>
         <ul>
         {% for feature in feature_list %}
+            {% if feature['image'] %}
+                <img src="{{ feature['image'] }}"/>
+            {%  endif %}
             <li><a href="{{ feature['link'] }}">{{ feature['name'] }} <span class="badge pull-right {{ feature['status_class']}}">{{ feature['status'] }}</span></a></li>
         {% endfor %}
         </ul>

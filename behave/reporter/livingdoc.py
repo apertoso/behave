@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 import os.path
 import codecs
-import sys, errno, os
+import sys, errno, os, json
 from jinja2 import Environment, FileSystemLoader
 from xml.etree import ElementTree
 from behave.reporter.base import Reporter
@@ -102,6 +102,14 @@ class LivingDocReporter(Reporter):
     scenario_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
     step_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'undefined': 0, 'untested': 0}
 
+    def __init__(self, config):
+        super(LivingDocReporter, self).__init__(config)
+        if config.livingdoc_meta:
+            with open(config.livingdoc_meta) as data_file:
+                self.metadata = json.load(data_file)
+        else:
+            self.metadata = None
+
     def make_feature_filename(self, feature):
         filename = None
         for path in self.config.paths:
@@ -121,7 +129,9 @@ class LivingDocReporter(Reporter):
         feature_filename  = self.make_feature_filename(feature)
         classname = feature_filename
         report = FeatureReportData(feature, feature_filename)
-
+        feature_meta = self.metadata['features'] if 'features' in self.metadata else False
+        meta = [d for d in feature_meta if d['name'] == feature.name]
+        meta = meta[0] if meta else False
         suite = ElementTree.Element(u'testsuite')
         feature_name = feature.name or feature_filename
         suite.set(u'name', u'%s.%s' % (classname, feature_name))
@@ -174,12 +184,14 @@ class LivingDocReporter(Reporter):
             'status': feature.status,
             'status_class': status_class,
             'file': feature_filename,
-            'link': feature_basename
+            'link': feature_basename,
+            'image': meta['image'] if meta else False
         })
         feature_html = self.jinja_env.get_template('feature.html')
         with open(feature_filename, 'wb') as f:
             f.write(feature_html.render(feature=feature,
                                         status=status_class,
+                                        meta=meta,
                                         path='/features/'+feature_basename,
                                         company_name='LivingDocReporter'))
 

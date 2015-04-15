@@ -1,0 +1,29 @@
+{
+  "config": {
+
+  },
+  "features": [
+    {
+      "name": "Background",
+      "image": "https://s-media-cache-ak0.pinimg.com/736x/f3/9a/47/f39a47f5d2c442e628fa581855c46db3.jpg",
+      "links": [
+        {
+          "name": "Google",
+          "url": "http://www.google.com"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "bad_practice",
+      "image": "https://s-media-cache-ak0.pinimg.com/736x/f3/9a/47/f39a47f5d2c442e628fa581855c46db3.jpg",
+      "links": [
+        {
+          "name": "Google",
+          "url": "http://www.google.com"
+        }
+      ]
+    }
+  ]
+}
