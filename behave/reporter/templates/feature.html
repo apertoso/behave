@@ -55,7 +55,7 @@
                 <div class="panel panel-warning" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                     <div class="panel-heading">
-                        <h3 class="panel-title"><span class="text-muted">Scenario:</span> {{ scenario.name }} <span class="pull-right">{{ scenario.status }}</span></h3>
+                        <h3 class="panel-title"><span class="text-muted">Scenario:</span> {{ scenario.name }} <span class="pull-right">{% if scenario.tags %}<span class="text-muted">Tags: </span>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %} </span></h3>
                     </div>
                     <div class="panel-body">
                         {% for step in scenario.steps %}
@@ -88,7 +88,7 @@
                         {% endfor %}
                     </div>
                     <div class="panel-footer">
-                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right">{% if scenario.tags %}<strong>Tags: </strong>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %} <a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
+                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right"><a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
                     </div>
                 </div>
             {% endif %}
@@ -103,7 +103,7 @@
                 <div class="panel panel-warning" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                 {% endif %}
                     <div class="panel-heading">
-                        <h3 class="panel-title"><span class="text-muted">Scenario Outline:</span> <span class="scenario_title">{{ scenario.name | e }}</span> <span class="pull-right">{{ scenario.status }}</span></h3>
+                        <h3 class="panel-title"><span class="text-muted">Scenario Outline:</span> <span class="scenario_title">{{ scenario.name | e }}</span> <span class="pull-right">{% if scenario.tags %}<span class="text-muted">Tags: </span>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %}</span></h3>
                     </div>
                     <div class="panel-body" id="{{ loop.index }}_content">
                         <div class="{{ loop.index }}_example examples">
@@ -202,7 +202,7 @@
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}{% if scenario.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}</span>{% endif %}</p>
+                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right"><a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
                     </div>
                 </div>
             {% endif %}
