@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="row col-lg-12" style="background-image: url('{{ meta['image'] }}'); background-size: cover; min-height: 32em;">
+    <div class="row col-lg-12" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); width: calc(100% + 30px)">
+        <h1 style="margin-top: 10em;">{{  feature.name }}</h1>
+        {% if feature.description %}
+        <p class="lead">{% for description in feature.description %}{{description}}<br>{% endfor %}</p>
+        {% endif %}
+    </div>
+</div>
+
 <div class="row">
-    <h1><span class="text-muted">Feature:</span> {{ feature.name }} <span class="pull-right btn-lg {{ status }}">{{ feature['status'] }}</span></h1>
+    <!-- <h1><span class="text-muted">Feature:</span> {{ feature.name }} <span class="pull-right btn-lg {{ status }}">{{ feature['status'] }}</span></h1>
     <hr>
     <p><strong>File: </strong>{{ feature.filename }} {% if feature.tags %}<span class="pull-right"><strong>Tags: </strong>{% for tag in feature.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag}}</span></a> {% endfor %}</span>{% endif %}</p>
     <p>&nbsp;</p>
@@ -20,7 +29,7 @@
     {% endfor %}
     </ul>
     <p>&nbsp;</p>
-    {% endif %}
+    {% endif %} -->
     {% if feature.background %}
     <h3>Background</h3>
     <hr>
@@ -218,6 +227,14 @@
             {% endif %}
         {% endfor %}
     </div>
+    <h3>Other Resources</h3>
+    <hr>
+    <ul>
+    {% for entry in meta['links'] %}
+        <li><a href="{{ entry['url'] }}">{{ entry['name'] }}</a></li>
+    {% endfor %}
+    </ul>
+    <p>&nbsp;</p>
 </div>
 {% endblock %}
 {% block feature_active %} class="active"{% endblock %}

@@ -95,7 +95,7 @@ class LivingDocReporter(Reporter):
     show_multiline = True
     show_timings   = True     # -- Show step timings.
     show_tags      = True
-    jinja_env = Environment(loader=FileSystemLoader(os.getcwd()+'/behave/reporter/templates'))
+    jinja_env = Environment(loader=FileSystemLoader('/home/colinwren/dev/behave/behave/reporter/templates'))
     feature_links = {}
     tags = {}
     feature_summary = {'passed': 0, 'failed': 0, 'skipped': 0, 'untested': 0}
@@ -185,7 +185,8 @@ class LivingDocReporter(Reporter):
             'status_class': status_class,
             'file': feature_filename,
             'link': feature_basename,
-            'image': meta['image'] if meta else False
+            'desc': meta['desc'] if 'desc' in meta else False,
+            'image': meta['image'] if 'image' in meta else False
         })
         feature_html = self.jinja_env.get_template('feature.html')
         with open(feature_filename, 'wb') as f:
@@ -209,10 +210,19 @@ class LivingDocReporter(Reporter):
         tag_html = self.jinja_env.get_template('tag.html')
         features_list = OrderedDict(sorted(self.feature_links.items()))
         tags = {}
-        for k,v in self.tags.iteritems():
-            if k[0] not in tags:
-                tags[k[0]] = []
-            tags[k[0]].append(k)
+        tag_meta = self.metadata['tags'] if 'tags' in self.metadata else False
+        for tag in self.tags.iteritems():
+            tag_name = str(tag[0])
+            meta = [d for d in tag_meta if d['name'] == tag_name]
+            meta = meta[0] if meta else False
+            if tag_name[0] not in tags:
+                tags[tag_name[0]] = []
+            tag_dict = dict()
+            tag_dict['name'] = tag_name
+            tag_dict['objs'] = tag[1]
+            if meta and 'meta' not in tag_dict:
+                tag_dict['meta'] = meta
+            tags[tag_name[0]].append(tag_dict)
         tags_list = OrderedDict(sorted(tags.items()))
         stats = [
             {'name': 'Features', 'summary': self.feature_summary},
