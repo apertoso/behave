@@ -78,33 +78,58 @@
                     </div>
                     <div class="panel-body">
                         {% for step in scenario.steps %}
-                            <div class="container-fluid">
-                            <p><strong>{{ step.keyword }}</strong> {{ step.name }} {% if step.status=='passed' %}<span class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>{% endif %}{% if step.status=='failed' %}<span class="pull-right"><i class="glyphicon glyphicon-remove"></i></span>{% endif %}</p>
-                            {% if step.text %}
-                                <pre>{{ step.text}}</pre>
+                            {% if step.keyword=='Given' %}
+                                <div class="list-group col-lg-3">
+                                <h3 style="margin-left: 40px;">Given</h3>
+                                <ul>
                             {% endif %}
-                            {% if step.table %}
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            {% for heading in step.table.headings %}
-                                                <th>{{ heading }}</th>
-                                            {% endfor %}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for row in step.table.rows %}
-                                            <tr>
-                                               {% for cell in row.cells %}
-                                                    <td>{{ cell }}</td>
-                                               {% endfor %}
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+
+                            {% if step.keyword=='When' %}
+                                </ul>
+                                </div>
+                                <div class="list-group col-lg-3 col-lg-offset-1">
+                                 <h3 style="margin-left: 40px;">When</h3>
+                                <ul>
                             {% endif %}
-                            </div>
+
+                            {% if step.keyword=='Then' %}
+                                </ul>
+                                </div>
+                                <div class="list-group col-lg-3 col-lg-offset-1">
+                                 <h3 style="margin-left: 40px;">Then</h3>
+                                <ul>
+                            {% endif %}
+
+
+                                    <li class="list-group-item">{% if step.keyword not in ['Given', 'When', 'Then'] %}<strong>{{ step.keyword }}</strong> {%  endif %}{{ step.name }} {% if step.status=='passed' %}<span class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>{% endif %}{% if step.status=='failed' %}<span class="pull-right"><i class="glyphicon glyphicon-remove"></i></span>{% endif %}
+                                    {% if step.text %}
+                                        <pre>{{ step.text}}</pre>
+                                    {% endif %}
+                                    {% if step.table %}
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    {% for heading in step.table.headings %}
+                                                        <th>{{ heading }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in step.table.rows %}
+                                                    <tr>
+                                                       {% for cell in row.cells %}
+                                                            <td>{{ cell }}</td>
+                                                       {% endfor %}
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                    </li>
+
                         {% endfor %}
+                        </ul>
+                        </div>
                     </div>
                     <div class="panel-footer">
                         <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right"><a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
