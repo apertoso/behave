@@ -17,36 +17,80 @@
     </div>
 </div>
 
-<div class="row col-lg-12">
+<div class="row col-lg-12 background">
     {% if feature.background %}
     <h2 id="background">Background <small class="pull-right"><a href="#top">Back to top</a></small></h2>
     <hr>
     {% for step in feature.background.steps %}
-        <p><strong>{{ step.keyword }}</strong> {{ step.name }} {% if step.status=='passed' %}<span class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>{% endif %}{% if step.status=='failed' %}<span class="pull-right"><i class="glyphicon glyphicon-remove"></i></span>{% endif %}</p>
-        {% if step.table %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        {% for heading in step.table.headings %}
-                            <th>{{ heading }}</th>
+        {% if step.keyword=='Given' %}
+                                <div class="panel panel-warning col-lg-3">
+                                    <div class="panel-heading">
+                                        <div class="panel-title"><h4>Given</h4></div>
+                                    </div>
+                                    <ul class="list-group">
+                            {% endif %}
+
+                            {% if step.keyword=='When' %}
+                                    </ul>
+                                </div>
+                                <div class="col-lg-1 bdd-icons">
+                                    <p>
+                                    <i class="glyphicon glyphicon-flash small-icon"></i><br>
+                                    <i class="glyphicon glyphicon-user icon"></i></p>
+                                </div>
+                                <div class="panel panel-info col-lg-3">
+                                    <div class="panel-heading">
+                                        <div class="panel-title"><h4>When</h4></div>
+                                    </div>
+                                    <ul class="list-group">
+                            {% endif %}
+
+                            {% if step.keyword=='Then' %}
+                                    </ul>
+                                </div>
+                                <div class="col-lg-1 bdd-icons">
+                                    <p><span class="icon"><i class="glyphicon glyphicon-minus"></i><br><i class="glyphicon glyphicon-minus"></i></span></p>
+                                </div>
+                                <div class="panel panel-success col-lg-3">
+                                    <div class="panel-heading">
+                                        <div class="panel-title"><h4>Then</h4></div>
+                                    </div>
+                                    <ul class="list-group">
+                            {% endif %}
+
+
+                                    <li class="list-group-item">{% if step.keyword not in ['Given', 'When', 'Then'] %}<strong>{{ step.keyword }}</strong> {%  endif %}{{ step.name }} {% if step.status=='passed' %}<span class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>{% endif %}{% if step.status=='failed' %}<span class="pull-right"><i class="glyphicon glyphicon-remove"></i></span>{% endif %}
+                                    {% if step.text %}
+                                        <pre>{{ step.text}}</pre>
+                                    {% endif %}
+                                    {% if step.table %}
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    {% for heading in step.table.headings %}
+                                                        <th>{{ heading }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in step.table.rows %}
+                                                    <tr>
+                                                       {% for cell in row.cells %}
+                                                            <td>{{ cell }}</td>
+                                                       {% endfor %}
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                    </li>
                         {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in step.table.rows %}
-                        <tr>
-                           {% for cell in row.cells %}
-                                <td>{{ cell }}</td>
-                           {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-    {% endfor %}
+                     </ul>
+                    </div>
     <p>&nbsp;</p>
     {% endif %}
-
+    </div>
+    <div class="row col-lg-12">
     <h2 id="scenarios">Scenarios <small class="pull-right"><a href="#top">Back to top</a></small></h2>
     <hr>
     <!-- <div class="container"> -->
@@ -71,9 +115,6 @@
                                     <div class="panel-heading">
                                         <div class="panel-title"><h4>Given</h4></div>
                                     </div>
-                                    {% if step.text %}
-                                         <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                    {% endif %}
                                     <ul class="list-group">
                             {% endif %}
 
@@ -89,9 +130,6 @@
                                     <div class="panel-heading">
                                         <div class="panel-title"><h4>When</h4></div>
                                     </div>
-                                    {% if step.text %}
-                                         <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                    {% endif %}
                                     <ul class="list-group">
                             {% endif %}
 
@@ -105,9 +143,6 @@
                                     <div class="panel-heading">
                                         <div class="panel-title"><h4>Then</h4></div>
                                     </div>
-                                    {% if step.text %}
-                                         <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                    {% endif %}
                                     <ul class="list-group">
                             {% endif %}
 
@@ -162,9 +197,6 @@
                                         <div class="panel-heading">
                                             <div class="panel-title"><h4>Given</h4></div>
                                         </div>
-                                        {% if step.text %}
-                                                <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                        {% endif %}
                                         <ul class="list-group">
                                 {% endif %}
 
@@ -180,9 +212,6 @@
                                         <div class="panel-heading">
                                             <div class="panel-title"><h4>When</h4></div>
                                         </div>
-                                        {% if step.text %}
-                                                <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                        {% endif %}
                                         <ul class="list-group">
                                 {% endif %}
 
@@ -195,9 +224,6 @@
                                     <div class="panel panel-success col-lg-3">
                                         <div class="panel-heading">
                                             <div class="panel-title"><h4>Then</h4></div>
-                                            {% if step.text %}
-                                                <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                            {% endif %}
                                         </div>
                                         <ul class="list-group">
                                 {% endif %}
@@ -260,9 +286,6 @@
                                         <div class="panel-heading">
                                             <div class="panel-title"><h4>Given</h4></div>
                                         </div>
-                                        {% if step.text %}
-                                                <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                        {% endif %}
                                         <ul class="list-group">
                                     {% endif %}
 
@@ -278,9 +301,6 @@
                                             <div class="panel-heading">
                                                 <div class="panel-title"><h4>When</h4></div>
                                             </div>
-                                            {% if step.text %}
-                                                    <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                            {% endif %}
                                             <ul class="list-group">
                                     {% endif %}
 
@@ -293,9 +313,6 @@
                                         <div class="panel panel-success col-lg-3">
                                             <div class="panel-heading">
                                                 <div class="panel-title"><h4>Then</h4></div>
-                                                {% if step.text %}
-                                                    <div class="panel-body"><pre>{{ step.text | e }}</pre></div>
-                                                {% endif %}
                                             </div>
                                             <ul class="list-group">
                                     {% endif %}
@@ -338,6 +355,8 @@
                 <p>&nbsp;</p>
             {% endif %}
         {% endfor %}
+        </div>
+    <div class="row col-lg-12">
     <!-- </div> -->
     <h2 id="other-resources">Other Resources <small class="pull-right"><a href="#top">Back to top</a></small></h2>
     <hr>
