@@ -98,9 +98,9 @@
                 var i = null, ec = null, tc = null;
                 i = $(this).attr('data-id');
                 ec = $(this).parents('.panel-body').find('.examples');
-                var e = $(this).parents('.panel-body').find('#'+ i);
+                var e = $(this).parents('.panel').find('#'+ i);
                 tc = $(this).parents('.panel').find('.scenario_title');
-                var t = $(this).parents('.panel-body').find('.example_title #title_'+i);
+                var t = $(this).parents('.panel').find('.example_title #title_'+i);
                 ec[0].innerHTML = e[0].innerHTML;
                 tc[0].innerHTML = t[0].innerHTML;
             });
