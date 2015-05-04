@@ -61,43 +61,60 @@
 
     <h2>Scenarios</h2>
     <hr>
-    <div class="container">
+    <!-- <div class="container"> -->
         {% for scenario in feature.scenarios %}
             {% if scenario.type=='scenario' %}
-                {% if scenario.status=='passed' %}
-                <div class="panel panel-success" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
-                {% endif %}
-                {% if scenario.status=='failed' %}
-                <div class="panel panel-danger" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
-                {% endif %}
-                {% if scenario.status not in ['passed', 'failed'] %}
-                <div class="panel panel-warning" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
-                {% endif %}
+                <div class="panel panel-default" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><span class="text-muted">Scenario:</span> {{ scenario.name }} <span class="pull-right">{% if scenario.tags %}<span class="text-muted">Tags: </span>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %} </span></h3>
+                        <div class="panel-title">
+                            <h3><span class="text-muted">Scenario:</span> {{ scenario.name }}
+                                <small class="pull-right">{% if scenario.tags %}
+                                    <span class="text-muted">Tags: </span>
+                                    {% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}
+                                    {% endif %}
+                                </small>
+                            </h3>
+                        </div>
                     </div>
                     <div class="panel-body">
                         {% for step in scenario.steps %}
                             {% if step.keyword=='Given' %}
-                                <div class="list-group col-lg-3">
-                                <h3 style="margin-left: 40px;">Given</h3>
-                                <ul>
+                                <div class="panel panel-warning col-lg-3">
+                                    <div class="panel-heading">
+                                        <div class="panel-title"><h4>Given</h4></div>
+                                    </div>
+                                    <!-- <div class="panel-body"></div> -->
+                                    <ul class="list-group">
                             {% endif %}
 
                             {% if step.keyword=='When' %}
-                                </ul>
+                                    </ul>
                                 </div>
-                                <div class="list-group col-lg-3 col-lg-offset-1">
-                                 <h3 style="margin-left: 40px;">When</h3>
-                                <ul>
+                                <div class="col-lg-1 bdd-icons">
+                                    <p>
+                                    <i class="glyphicon glyphicon-flash small-icon"></i><br>
+                                    <i class="glyphicon glyphicon-user icon"></i></p>
+                                </div>
+                                <div class="panel panel-info col-lg-3">
+                                    <div class="panel-heading">
+                                        <div class="panel-title"><h4>When</h4></div>
+                                    </div>
+                                    <!-- <div class="panel-body"></div> -->
+                                    <ul class="list-group">
                             {% endif %}
 
                             {% if step.keyword=='Then' %}
-                                </ul>
+                                    </ul>
                                 </div>
-                                <div class="list-group col-lg-3 col-lg-offset-1">
-                                 <h3 style="margin-left: 40px;">Then</h3>
-                                <ul>
+                                <div class="col-lg-1 bdd-icons">
+                                    <p><span class="icon"><i class="glyphicon glyphicon-minus"></i><br><i class="glyphicon glyphicon-minus"></i></span></p>
+                                </div>
+                                <div class="panel panel-success col-lg-3">
+                                    <div class="panel-heading">
+                                        <div class="panel-title"><h4>Then</h4></div>
+                                    </div>
+                                    <!-- <div class="panel-body"></div> -->
+                                    <ul class="list-group">
                             {% endif %}
 
 
@@ -128,13 +145,13 @@
                                     </li>
 
                         {% endfor %}
-                        </ul>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <p><strong>File: </strong>{{ scenario.location.filename }}:{{ scenario.location.line}}<span class="pull-right"><a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
+                                </ul>
+                             </div>
+                        <p>&nbsp;</p>
+                        <p><span class="pull-right"><a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
                     </div>
                 </div>
+                <p>&nbsp;</p>
             {% endif %}
             {% if scenario.type=='scenario_outline' %}
                 {% if scenario.status=='passed' %}
@@ -251,7 +268,7 @@
                 </div>
             {% endif %}
         {% endfor %}
-    </div>
+    <!-- </div> -->
     <h3>Other Resources</h3>
     <hr>
     <ul>

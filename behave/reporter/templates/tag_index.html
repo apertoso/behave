@@ -12,9 +12,7 @@
                     </div>
                     <div class="col-lg-offset-2 col-lg-6">
                             {% if tag['meta']['image'] %}
-                                <img src="{{ tag['meta']['image'] }}" class="col-lg-12"/>
-                            {% else %}
-                                <img src="http://www.fillmurray.com/200/300"/>
+                                <img src="#" delayedsrc="{{ tag['meta']['image'] }}" class="col-lg-12"/>
                             {%  endif %}
                     </div>
                     <p>&nbsp;</p>
@@ -23,9 +21,7 @@
                 <div class="row col-lg-12">
                     <div class="col-lg-6">
                             {% if tag['meta']['image'] %}
-                                <img src="{{ tag['meta']['image'] }}" class="col-lg-12"/>
-                            {% else %}
-                                <img src="http://www.fillmurray.com/200/300"/>
+                                <img src="#" delayedsrc="{{ tag['meta']['image'] }}" class="col-lg-12"/>
                             {%  endif %}
                     </div>
                     <div class="col-lg-offset-2 col-lg-4">

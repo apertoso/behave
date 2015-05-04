@@ -9,6 +9,52 @@
         .navbar{
             margin-bottom: 0;
         }
+        .panel{
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            margin-bottom: 2em;
+        }
+
+        .panel-title > h3 > small{
+            line-height: 2;
+        }
+
+        .panel .panel {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        @media (min-width: 1200px){
+            .bdd-icons{
+                width: 12.33333%;
+            }
+        }
+
+
+        .bdd-icons > p {
+            height: 10em;
+        }
+        .bdd-icons > p > .icon{
+            position: absolute;
+            top: 26%;
+            left: 35%;
+            font-size: 3em;
+        }
+
+        .bdd-icons > p > .small-icon{
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            font-size: 1.5em;
+        }
+
+        .bdd-icons span.icon{
+            top: 15%;
+        }
+
+        .bdd-icons > p > .icon > .glyphicon-minus:last-child{
+            top: -0.8em;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +100,10 @@
                $(this).parents('.panel').find('.panel-body').toggle();
                $(this).parents('.panel').find('.panel-footer').toggle();
             });
+
+            $('img').each(function(){
+                $(this).attr('src', $(this).attr('delayedsrc'));
+            })
         });
     </script>
 </body>
