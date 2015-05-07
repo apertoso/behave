@@ -1,40 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for title, feature_list in features.iteritems() %}
-    {% set featuresloop = loop %}
-        {% for feature in feature_list %}
-            {% if featuresloop.index is odd %}
-                <div class="row col-lg-12">
-                    <div class="col-lg-4">
-                        {%  if feature['desc'] %}{{  feature['desc'] }}{%  endif %}
-                        <p><a href="{{ feature['link'] }}">Read more about {{ feature['name'] }} &gt;</a></p>
-                    </div>
-                    <div class="col-lg-offset-2 col-lg-6">
-                            {% if feature['image'] %}
-                                <img src="#" delayedsrc="{{ feature['image'] }}" class="col-lg-12"/>
-                            {%  endif %}
-                    </div>
-                    <p>&nbsp;</p>
-                </div>
-            {% else %}
-                <div class="row col-lg-12">
-                    <div class="col-lg-6">
-                            {% if feature['image'] %}
-                                <img src="#" delayedsrc="{{ feature['image'] }}" class="col-lg-12"/>
-                            {%  endif %}
-                    </div>
-                    <div class="col-lg-offset-2 col-lg-4">
-                        {%  if feature['desc'] %}{{  feature['desc'] }}{%  endif %}
-                        <p><a href="{{ feature['link'] }}">Read more about {{ feature['name'] }} &gt;</a></p>
-                    </div>
-                    <p>&nbsp;</p>
-                </div>
-            {% endif %}
+    {% for feature in features %}
+        {% if loop.index is odd %}
             <div class="row col-lg-12">
-                <p>&nbsp;</p>
+                <div class="col-lg-4">
+                    {%  if feature.blurb %}{{  feature.blurb }}{%  endif %}
+                    <p><a href="{{ feature.slug }}.html">Read more about {{ feature.name }} &gt;</a></p>
+                </div>
+                <div class="col-lg-offset-2 col-lg-6">
+                        {% if feature.image %}
+                            <img src="#" delayedsrc="{{ feature.image }}" class="col-lg-12"/>
+                        {%  endif %}
+                </div>
                 <p>&nbsp;</p>
             </div>
-        {% endfor %}
+        {% else %}
+            <div class="row col-lg-12">
+                <div class="col-lg-6">
+                        {% if feature.image %}
+                            <img src="#" delayedsrc="{{ feature.image }}" class="col-lg-12"/>
+                        {%  endif %}
+                </div>
+                <div class="col-lg-offset-2 col-lg-4">
+                    {%  if feature.blurb %}{{  feature.blurb }}{%  endif %}
+                    <p><a href="{{ feature.slug }}.html">Read more about {{ feature.name }} &gt;</a></p>
+                </div>
+                <p>&nbsp;</p>
+            </div>
+        {% endif %}
+        <div class="row col-lg-12">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+        </div>
     {% endfor %}
 {% endblock %}
 {% block feature_active %} class="active"{% endblock %}

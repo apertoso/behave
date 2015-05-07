@@ -4,10 +4,10 @@
         <ul class="list-inline pull-right">
             {% if feature.background %}<li><a href="#background">Background</a></li>{% endif %}
             {% if feature.scenarios %}<li><a href="#scenarios">Scenarios</a></li>{% endif %}
-            {% if meta and 'links' in meta %}<li><a href="#other-resources">Other Resources</a></li>{% endif %}
+            {% if feature.other_resources %}<li><a href="#other-resources">Other Resources</a></li>{% endif %}
         </ul>
     </div>
-<div class="row col-lg-12 bdd-hero-outer" style="background-image: url('{{ meta['image'] }}');">
+<div class="row col-lg-12 bdd-hero-outer" style="background-image: url('{{ feature.image }}');">
 
     <div class="row col-lg-12 bdd-hero-inner">
         <h1>{{  feature.name }}</h1>
@@ -356,16 +356,19 @@
             {% endif %}
         {% endfor %}
         </div>
-    <div class="row col-lg-12">
-    <!-- </div> -->
-    <h2 id="other-resources">Other Resources <small class="pull-right"><a href="#top">Back to top</a></small></h2>
-    <hr>
-    <ul>
-    {% for entry in meta['links'] %}
-        <li><a href="{{ entry['url'] }}">{{ entry['name'] }}</a></li>
-    {% endfor %}
-    </ul>
-    <p>&nbsp;</p>
-</div>
+    {%  if feature.other_resources %}
+        <div class="row col-lg-12">
+
+        <h2 id="other-resources">Other Resources <small class="pull-right"><a href="#top">Back to top</a></small></h2>
+        <hr>
+        <ul>
+
+        {% for entry in feature.other_resources %}
+            <li><a href="{{ entry.url }}">{{ entry.name }}</a></li>
+        {% endfor %}
+        </ul>
+        <p>&nbsp;</p>
+        </div>
+    {%  endif %}
 {% endblock %}
 {% block feature_active %} class="active"{% endblock %}
