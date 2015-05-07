@@ -2,24 +2,24 @@
 {% block content %}
 <div class="row">
     <h2>{{ title }}</h2>
-    {% for tag in tags %}
+    {% for item in items %}
         {% if loop.index is odd %}
             <div class="row col-lg-12">
                 <div class="col-lg-4">
-                    <h3>{% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %}</h3>
-                    {%  if tag.blurb %}{{ tag.blurb }}{%  endif %}
-                    {%  if tag.features %}
+                    <h3>{% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %}</h3>
+                    {%  if item.blurb %}{{ item.blurb }}{%  endif %}
+                    {%  if item.features %}
                     <h4>Features</h4>
                     <ul>
-                        {% for feature in tag.features %}
+                        {% for feature in item.features %}
                             <li><a href="../features/{{ feature.slug }}.html">{{ feature.name }}</a></li>
                         {% endfor %}
                     </ul>
                     {%  endif %}
                 </div>
                 <div class="col-lg-offset-2 col-lg-6">
-                        {% if tag.image %}
-                            <img src="#" delayedsrc="{{ tag.image }}" class="col-lg-12"/>
+                        {% if item.image %}
+                            <img src="#" delayedsrc="{{ item.image }}" class="col-lg-12"/>
                         {%  endif %}
                 </div>
                 <p>&nbsp;</p>
@@ -27,17 +27,17 @@
         {% else %}
             <div class="row col-lg-12">
                 <div class="col-lg-6">
-                        {% if tag.image %}
-                            <img src="#" delayedsrc="{{ tag.image }}" class="col-lg-12"/>
+                        {% if item.image %}
+                            <img src="#" delayedsrc="{{ item.image }}" class="col-lg-12"/>
                         {%  endif %}
                 </div>
                 <div class="col-lg-offset-2 col-lg-4">
-                    <h3>{% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %}</h3>
-                    {%  if tag.blurb %}{{  tag.blurb }}{%  endif %}
-                    {%  if tag.features %}
+                    <h3>{% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %}</h3>
+                    {%  if item.blurb %}{{ item.blurb }}{%  endif %}
+                    {%  if item.features %}
                     <h4>Features</h4>
                     <ul>
-                        {% for feature in tag.features %}
+                        {% for feature in item.features %}
                             <li><a href="../features/{{ feature.slug }}.html">{{ feature.name }}</a></li>
                         {% endfor %}
                     </ul>

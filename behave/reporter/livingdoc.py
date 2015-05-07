@@ -308,7 +308,7 @@ class LivingDocReporter(Reporter):
                 for tag in self.tags:
                     if menu_item.expr and menu_item.expr.search(tag.name):
                         tags.append(tag)
-                self.render_tags_page(menu_item, tags)
+                self.render_single(menu_item, tags)
 
     def render_directory(self, menu_item, items):
         index_html = self.jinja_env.get_template('directory_index.html')
@@ -327,12 +327,12 @@ class LivingDocReporter(Reporter):
             with open(item_filename, 'wb') as f:
                 f.write(item_render)
 
-    def render_tags_page(self, menu_item, tags):
-        index_html = self.jinja_env.get_template('tag_page.html')
+    def render_single(self, menu_item, items):
+        index_html = self.jinja_env.get_template('single_page.html')
         output_dir = '{0}/{1}/'.format(self.config.livingdoc_directory,
                                         slugify_string(menu_item.name))
         index_filename = '{0}index.html'.format(output_dir)
-        index_render = index_html.render(tags=tags,
+        index_render = index_html.render(items=items,
                                          title=menu_item.name,
                                          metadata=self.metadata)
         with open(index_filename, 'wb') as f:
