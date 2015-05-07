@@ -2,13 +2,13 @@
 
 {% block content %}
 <div class="row">
-    <h1><span class="text-muted">Tag:</span> {{ title }}</h1>
+    <h1><span class="text-muted">Tag:</span> {% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{%  endif %}</h1>
     <hr>
     <p>&nbsp;</p>
     <h2>Features</h2>
     <hr>
     <ul>
-    {% for item in tags %}
+    {% for item in tag.features %}
         {% if item.keyword=='Feature' %}
           <li><a href="../features/{{ item.location.filename | replace('.feature', '') }}.html">{{ item.name }}</a></li>
         {% endif %}
@@ -16,7 +16,7 @@
     </ul>
     <h2>Scenarios</h2>
     <hr>
-    {% for scenario in tags %}
+    {% for scenario in tag.scenarios %}
         {% if scenario.keyword in ['Scenario', 'Scenario Outline'] %}
             <div class="container">
                 {% if scenario.type=='scenario' %}

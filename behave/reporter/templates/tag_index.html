@@ -1,41 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
-    {% for title, tag_list in tags.iteritems() %}
-    {% set tagsloop = loop %}
-        {% for tag in tag_list %}
-            {% if tagsloop.index is odd %}
-                <div class="row col-lg-12">
-                    <div class="col-lg-4">
-                        {%  if tag['meta']['desc'] %}{{  tag['meta']['desc'] }}{%  endif %}
-                        <p><a href="{{ tag['name'] }}.html">Read more about {{ tag['name'] }} &gt;</a></p>
-                    </div>
-                    <div class="col-lg-offset-2 col-lg-6">
-                            {% if tag['meta']['image'] %}
-                                <img src="#" delayedsrc="{{ tag['meta']['image'] }}" class="col-lg-12"/>
-                            {%  endif %}
-                    </div>
-                    <p>&nbsp;</p>
-                </div>
-            {% else %}
-                <div class="row col-lg-12">
-                    <div class="col-lg-6">
-                            {% if tag['meta']['image'] %}
-                                <img src="#" delayedsrc="{{ tag['meta']['image'] }}" class="col-lg-12"/>
-                            {%  endif %}
-                    </div>
-                    <div class="col-lg-offset-2 col-lg-4">
-                        {%  if tag['meta']['desc'] %}{{  tag['meta']['desc'] }}{%  endif %}
-                        <p><a href="{{ tag['name'] }}.html">Read more about {{ tag['name'] }} &gt;</a></p>
-                    </div>
-                    <p>&nbsp;</p>
-                </div>
-            {% endif %}
+    <h2>{{ title }}</h2>
+    {% for tag in tags %}
+        {% if loop.index is odd %}
             <div class="row col-lg-12">
-                <p>&nbsp;</p>
+                <div class="col-lg-4">
+                    <h3>{% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %}</h3>
+                    {%  if tag.blurb %}{{ tag.blurb }}{%  endif %}
+                    <p><a href="{{ tag.slug }}.html">Read more about {% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %} &gt;</a></p>
+                </div>
+                <div class="col-lg-offset-2 col-lg-6">
+                        {% if tag.image %}
+                            <img src="#" delayedsrc="{{ tag.image }}" class="col-lg-12"/>
+                        {%  endif %}
+                </div>
                 <p>&nbsp;</p>
             </div>
-        {% endfor %}
+        {% else %}
+            <div class="row col-lg-12">
+                <div class="col-lg-6">
+                        {% if tag.image %}
+                            <img src="#" delayedsrc="{{ tag.image }}" class="col-lg-12"/>
+                        {%  endif %}
+                </div>
+                <div class="col-lg-offset-2 col-lg-4">
+                    <h3>{% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %}</h3>
+                    {%  if tag.blurb %}{{  tag.blurb }}{%  endif %}
+                    <p><a href="{{ tag.slug }}.html">Read more about {% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %} &gt;</a></p>
+                </div>
+                <p>&nbsp;</p>
+            </div>
+        {% endif %}
+        <div class="row col-lg-12">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+        </div>
     {% endfor %}
 </div>
 {% endblock %}

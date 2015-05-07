@@ -4,9 +4,9 @@ from __future__ import absolute_import
 import errno
 import os
 import json
+import re
 from jinja2 import Environment, FileSystemLoader
 from behave.reporter.base import Reporter
-from collections import OrderedDict
 
 
 def slugify_string(string_to_slug):
@@ -15,6 +15,7 @@ def slugify_string(string_to_slug):
         string_to_slug = string_to_slug.replace(character.decode('ascii',
                                                                  'ignore'),
                                                 '')
+    string_to_slug = string_to_slug.replace('_', ' ')
     return '-'.join(string_to_slug.lower().split(' '))
 
 
@@ -37,7 +38,7 @@ class LivingDocMetaDataMenu(object):
         if menu_type not in self._types:
             raise StandardError('Incorrect menu type passed')
         self.type = menu_type
-        self.expr = expr
+        self.expr = re.compile(expr) if expr else None
 
 
 class LivingDocMetaDataFeature(object):
@@ -51,9 +52,10 @@ class LivingDocMetaDataFeature(object):
 
 class LivingDocMetaDataTag(object):
 
-    def __init__(self, name, image, desc, long_desc, links):
+    def __init__(self, name, image, title, desc, long_desc, links):
         self.name = name
         self.image = image
+        self.title = title
         self.desc = desc
         self.long_desc = long_desc
         self.links = process_links(links) if links else None
@@ -144,6 +146,8 @@ class LivingDocMetaData(object):
                 else None
             item_image = item['image'] if 'image' in item and item['image'] \
                 else None
+            item_title = item['title'] if 'title' in item and item['title'] \
+                else None
             item_desc = item['desc'] if 'desc' in item and item['desc'] \
                 else None
             item_long_desc = item['long_desc'] if 'long_desc' in item and \
@@ -152,6 +156,7 @@ class LivingDocMetaData(object):
                 else None
             tag = LivingDocMetaDataTag(item_name,
                                        item_image,
+                                       item_title,
                                        item_desc,
                                        item_long_desc,
                                        item_links)
@@ -185,17 +190,17 @@ class LivingDocTag(object):
         if len(metadata) > 0:
             meta = metadata[0]
             self.name = meta.name
+            self.title = meta.title
             self.image = meta.image
             self.blurb = meta.desc
             self.desc = meta.long_desc
             self.other_resources = meta.links
         else:
-            self.name = None
             self.image = None
             self.blurb = None
             self.desc = None
             self.other_resource = None
-        self.slug = slugify_string(self.name)
+        self.slug = slugify_string(self.title if self.title else self.name)
 
 
 class LivingDocReporter(Reporter):
@@ -211,6 +216,7 @@ class LivingDocReporter(Reporter):
 
         # setup array for features
         self.features = []
+        self.tags = []
 
         # setup meta data object
         if config.livingdoc_meta:
@@ -253,6 +259,33 @@ class LivingDocReporter(Reporter):
                 metadata.name == feature.name]
         living_doc_feature = LivingDocFeature(feature, meta)
         self.features.append(living_doc_feature)
+        for tag in feature.tags:
+            get_tag = self.get_tag_obj(tag)
+            if get_tag:
+                get_tag.features.append(feature)
+            else:
+                tag_object = LivingDocTag(tag, [metadata for metadata in
+                                                self.metadata.tags if
+                                                metadata.name == tag])
+                tag_object.features.append(feature)
+                self.tags.append(tag_object)
+        for scenario in feature.scenarios:
+            for tag in scenario.tags:
+                get_tag = self.get_tag_obj(tag)
+                if get_tag:
+                    get_tag.scenarios.append(scenario)
+                else:
+                    tag_object = LivingDocTag(tag, [metadata for metadata in
+                                                    self.metadata.tags if
+                                                    metadata.name == tag])
+                    tag_object.scenarios.append(scenario)
+                    self.tags.append(tag_object)
+
+    def get_tag_obj(self, tag_name):
+        for tag_obj in self.tags:
+            if tag_obj.name == tag_name:
+                return tag_obj
+        return False
 
     def end(self):
         index_html = self.jinja_env.get_template('index.html')
@@ -268,8 +301,17 @@ class LivingDocReporter(Reporter):
             if menu_item.type == 'feature':
                 self.render_features(menu_item)
             elif menu_item.type == 'tag':
-                print 1
+                tags = []
+                for tag in self.tags:
+                    if menu_item.expr and menu_item.expr.search(tag.name):
+                        tags.append(tag)
+                self.render_tags(menu_item, tags)
             # elif menu_item.type == 'tag_page':
+            #     tags = []
+            #     for tag in self.tags:
+            #         if menu_item.expr and menu_item.expr.search(tag.name):
+            #             tags.append(tag)
+            #     self.render_tags_page(menu_item)
 
 
 
@@ -344,3 +386,20 @@ class LivingDocReporter(Reporter):
             with open(feature_filename, 'wb') as f:
                 f.write(feature_render)
 
+    def render_tags(self, menu_item, tags):
+        index_html = self.jinja_env.get_template('tag_index.html')
+        single_html = self.jinja_env.get_template('tag.html')
+        output_dir = '{0}/{1}/'.format(self.config.livingdoc_directory,
+                                        slugify_string(menu_item.name))
+        index_filename = '{0}index.html'.format(output_dir)
+        index_render = index_html.render(tags=tags,
+                                         title=menu_item.name,
+                                         metadata=self.metadata)
+        with open(index_filename, 'wb') as f:
+            f.write(index_render)
+        for tag in tags:
+            tag_render = single_html.render(tag=tag,
+                                            metadata=self.metadata)
+            tag_filename = '{0}{1}.html'.format(output_dir, tag.slug)
+            with open(tag_filename, 'wb') as f:
+                f.write(tag_render)
