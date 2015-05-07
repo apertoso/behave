@@ -259,17 +259,17 @@ class LivingDocReporter(Reporter):
                 metadata.name == feature.name]
         living_doc_feature = LivingDocFeature(feature, meta)
         self.features.append(living_doc_feature)
-        for tag in feature.tags:
+        for tag in living_doc_feature.tags:
             get_tag = self.get_tag_obj(tag)
             if get_tag:
-                get_tag.features.append(feature)
+                get_tag.features.append(living_doc_feature)
             else:
                 tag_object = LivingDocTag(tag, [metadata for metadata in
                                                 self.metadata.tags if
                                                 metadata.name == tag])
-                tag_object.features.append(feature)
+                tag_object.features.append(living_doc_feature)
                 self.tags.append(tag_object)
-        for scenario in feature.scenarios:
+        for scenario in living_doc_feature.scenarios:
             for tag in scenario.tags:
                 get_tag = self.get_tag_obj(tag)
                 if get_tag:
@@ -288,9 +288,6 @@ class LivingDocReporter(Reporter):
         return False
 
     def end(self):
-        index_html = self.jinja_env.get_template('index.html')
-        tag_index_html = self.jinja_env.get_template('tag_index.html')
-        tag_html = self.jinja_env.get_template('tag.html')
 
         # iterate through menu stuff
         menu_items = self.metadata.menu if self.metadata and \
@@ -299,96 +296,39 @@ class LivingDocReporter(Reporter):
 
         for menu_item in menu_items:
             if menu_item.type == 'feature':
-                self.render_features(menu_item)
+                self.render_directory(menu_item, self.features)
             elif menu_item.type == 'tag':
                 tags = []
                 for tag in self.tags:
                     if menu_item.expr and menu_item.expr.search(tag.name):
                         tags.append(tag)
-                self.render_tags(menu_item, tags)
-            # elif menu_item.type == 'tag_page':
-            #     tags = []
-            #     for tag in self.tags:
-            #         if menu_item.expr and menu_item.expr.search(tag.name):
-            #             tags.append(tag)
-            #     self.render_tags_page(menu_item)
+                self.render_directory(menu_item, tags)
+            elif menu_item.type == 'tag_page':
+                tags = []
+                for tag in self.tags:
+                    if menu_item.expr and menu_item.expr.search(tag.name):
+                        tags.append(tag)
+                self.render_tags_page(menu_item, tags)
 
-
-
-        #     f.write(feature_html.render(feature=feature,
-        #                                 status=status_class,
-        #                                 meta=meta,
-        #                                 path='/features/'+feature_basename,
-        #                                 company_name='LivingDocReporter'))
-
-        # features_list = OrderedDict(sorted(self.feature_links.items()))
-        # tags = {}
-        # tag_meta = self.metadata['tags'] if 'tags' in self.metadata else False
-        # for tag in self.tags.iteritems():
-        #     tag_name = str(tag[0])
-        #     meta = [d for d in tag_meta if d['name'] == tag_name]
-        #     meta = meta[0] if meta else False
-        #     if tag_name[0] not in tags:
-        #         tags[tag_name[0]] = []
-        #     tag_dict = dict()
-        #     tag_dict['name'] = tag_name
-        #     tag_dict['objs'] = tag[1]
-        #     if meta and 'meta' not in tag_dict:
-        #         tag_dict['meta'] = meta
-        #     tags[tag_name[0]].append(tag_dict)
-        # tags_list = OrderedDict(sorted(tags.items()))
-        # stats = [
-        #     {'name': 'Features', 'summary': self.feature_summary},
-        #     {'name': 'Scenarios', 'summary': self.scenario_summary},
-        #     {'name': 'Steps', 'summary': self.step_summary}
-        # ]
-        #
-        # tag_dirname = self.config.livingdoc_directory + '/tags'
-        # try:
-        #     os.makedirs(tag_dirname)
-        # except OSError as exc:
-        #     if exc.errno == errno.EEXIST and os.path.isdir(tag_dirname):
-        #         pass
-        #     else:
-        #         raise
-        # # render a tag file for each tag which will contain
-        # # the scenarios and features tagged with that tag
-        # for tag, tags in self.tags.iteritems():
-        #     filename = '{0}/tags/{1}.html'.format(
-        #         self.config.livingdoc_directory, tag)
-        #     with open(filename, 'wb') as f:
-        #         f.write(tag_html.render(title=tag,
-        #                                 tags=tags,
-        #                                 path='/tags/'+tag+'.html'))
-        # with open(tag_index_filename, 'wb') as f:
-        #     f.write(tag_index_html.render(tags=tags_list))
-        # with open(feature_index_filename, 'wb') as f:
-        #     f.write(feature_index_html.render(features=features_list))
-        # with open(index_filename, 'wb') as f:
-        #     f.write(index_html.render(stats=stats,
-        #                               company_name='LivingDocReporter'))
-
-
-    def render_features(self, menu_item):
-        index_html = self.jinja_env.get_template('feature_index.html')
-        single_html = self.jinja_env.get_template('feature.html')
+    def render_directory(self, menu_item, items):
+        index_html = self.jinja_env.get_template('directory_index.html')
+        single_html = self.jinja_env.get_template('directory_single.html')
         output_dir = '{0}/{1}/'.format(self.config.livingdoc_directory,
                                         slugify_string(menu_item.name))
         index_filename = '{0}index.html'.format(output_dir)
-        index_render = index_html.render(features=self.features,
+        index_render = index_html.render(items=items,
                                          metadata=self.metadata)
         with open(index_filename, 'wb') as f:
             f.write(index_render)
-        for feature in self.features:
-            feature_render = single_html.render(feature=feature,
-                                                metadata=self.metadata)
-            feature_filename = '{0}{1}.html'.format(output_dir, feature.slug)
-            with open(feature_filename, 'wb') as f:
-                f.write(feature_render)
+        for item in items:
+            item_render = single_html.render(item=item,
+                                             metadata=self.metadata)
+            item_filename = '{0}{1}.html'.format(output_dir, item.slug)
+            with open(item_filename, 'wb') as f:
+                f.write(item_render)
 
-    def render_tags(self, menu_item, tags):
-        index_html = self.jinja_env.get_template('tag_index.html')
-        single_html = self.jinja_env.get_template('tag.html')
+    def render_tags_page(self, menu_item, tags):
+        index_html = self.jinja_env.get_template('tag_page.html')
         output_dir = '{0}/{1}/'.format(self.config.livingdoc_directory,
                                         slugify_string(menu_item.name))
         index_filename = '{0}index.html'.format(output_dir)
@@ -397,9 +337,3 @@ class LivingDocReporter(Reporter):
                                          metadata=self.metadata)
         with open(index_filename, 'wb') as f:
             f.write(index_render)
-        for tag in tags:
-            tag_render = single_html.render(tag=tag,
-                                            metadata=self.metadata)
-            tag_filename = '{0}{1}.html'.format(output_dir, tag.slug)
-            with open(tag_filename, 'wb') as f:
-                f.write(tag_render)

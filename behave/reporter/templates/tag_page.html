@@ -8,7 +8,14 @@
                 <div class="col-lg-4">
                     <h3>{% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %}</h3>
                     {%  if tag.blurb %}{{ tag.blurb }}{%  endif %}
-                    <p><a href="{{ tag.slug }}.html">Read more about {% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %} &gt;</a></p>
+                    {%  if tag.features %}
+                    <h4>Features</h4>
+                    <ul>
+                        {% for feature in tag.features %}
+                            <li><a href="../features/{{ feature.slug }}.html">{{ feature.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {%  endif %}
                 </div>
                 <div class="col-lg-offset-2 col-lg-6">
                         {% if tag.image %}
@@ -27,7 +34,14 @@
                 <div class="col-lg-offset-2 col-lg-4">
                     <h3>{% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %}</h3>
                     {%  if tag.blurb %}{{  tag.blurb }}{%  endif %}
-                    <p><a href="{{ tag.slug }}.html">Read more about {% if tag.title %}{{ tag.title }}{% else %}{{ tag.name }}{% endif %} &gt;</a></p>
+                    {%  if tag.features %}
+                    <h4>Features</h4>
+                    <ul>
+                        {% for feature in tag.features %}
+                            <li><a href="../features/{{ feature.slug }}.html">{{ feature.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
                 </div>
                 <p>&nbsp;</p>
             </div>

@@ -2,26 +2,27 @@
 {% block content %}
  <div class="col-lg-12">
         <ul class="list-inline pull-right">
-            {% if feature.background %}<li><a href="#background">Background</a></li>{% endif %}
-            {% if feature.scenarios %}<li><a href="#scenarios">Scenarios</a></li>{% endif %}
-            {% if feature.other_resources %}<li><a href="#other-resources">Other Resources</a></li>{% endif %}
+            {% if item.background %}<li><a href="#background">Background</a></li>{% endif %}
+            {% if item.features %}<li><a href="#features">Features</a></li>{% endif %}
+            {% if item.scenarios %}<li><a href="#scenarios">Scenarios</a></li>{% endif %}
+            {% if item.other_resources %}<li><a href="#other-resources">Other Resources</a></li>{% endif %}
         </ul>
     </div>
-<div class="row col-lg-12 bdd-hero-outer" style="background-image: url('{{ feature.image }}');">
+<div class="row col-lg-12 bdd-hero-outer" style="background-image: url('{{ item.image }}');">
 
     <div class="row col-lg-12 bdd-hero-inner">
-        <h1>{{  feature.name }}</h1>
-        {% if feature.description %}
-        <p class="lead">{% for description in feature.description %}{{description}}<br>{% endfor %}</p>
+        <h1>{% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %}</h1>
+        {% if item.description %}
+        <p class="lead">{% for description in item.description %}{{description}}<br>{% endfor %}</p>
         {% endif %}
     </div>
 </div>
 
 <div class="row col-lg-12 background">
-    {% if feature.background %}
+    {% if item.background %}
     <h2 id="background">Background <small class="pull-right"><a href="#top">Back to top</a></small></h2>
     <hr>
-    {% for step in feature.background.steps %}
+    {% for step in item.background.steps %}
         {% if step.keyword=='Given' %}
                                 <div class="panel panel-warning col-lg-3">
                                     <div class="panel-heading">
@@ -89,12 +90,24 @@
                     </div>
     <p>&nbsp;</p>
     {% endif %}
+        </div>
+    {% if item.features %}
+    <div class="row col-lg-12">
+        <h2 id="features">Features <small class="pull-right"><a href="#top">Back to top</a></small></h2>
+        <hr>
+        <ul>
+            {% for feature in item.features %}
+                <li><a href="../features/{{ feature.slug }}.html">{{ feature.name }}</a></li>
+            {% endfor %}
+        </ul>
     </div>
+    {% endif %}
+
     <div class="row col-lg-12">
     <h2 id="scenarios">Scenarios <small class="pull-right"><a href="#top">Back to top</a></small></h2>
     <hr>
     <!-- <div class="container"> -->
-        {% for scenario in feature.scenarios %}
+        {% for scenario in item.scenarios %}
             {% if scenario.type=='scenario' %}
                 <div class="panel panel-default" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
                     <div class="panel-heading">
@@ -356,14 +369,14 @@
             {% endif %}
         {% endfor %}
         </div>
-    {%  if feature.other_resources %}
+    {%  if item.other_resources %}
         <div class="row col-lg-12">
 
         <h2 id="other-resources">Other Resources <small class="pull-right"><a href="#top">Back to top</a></small></h2>
         <hr>
         <ul>
 
-        {% for entry in feature.other_resources %}
+        {% for entry in item.other_resources %}
             <li><a href="{{ entry.url }}">{{ entry.name }}</a></li>
         {% endfor %}
         </ul>

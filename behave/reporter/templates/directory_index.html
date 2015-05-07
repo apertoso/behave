@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for feature in features %}
+    {% for item in items %}
         {% if loop.index is odd %}
             <div class="row col-lg-12">
                 <div class="col-lg-4">
-                    {%  if feature.blurb %}{{  feature.blurb }}{%  endif %}
-                    <p><a href="{{ feature.slug }}.html">Read more about {{ feature.name }} &gt;</a></p>
+                    {%  if item.blurb %}{{  item.blurb }}{%  endif %}
+                    <p><a href="{{ item.slug }}.html">Read more about {% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %} &gt;</a></p>
                 </div>
                 <div class="col-lg-offset-2 col-lg-6">
-                        {% if feature.image %}
-                            <img src="#" delayedsrc="{{ feature.image }}" class="col-lg-12"/>
+                        {% if item.image %}
+                            <img src="#" delayedsrc="{{ item.image }}" class="col-lg-12"/>
                         {%  endif %}
                 </div>
                 <p>&nbsp;</p>
@@ -17,13 +17,13 @@
         {% else %}
             <div class="row col-lg-12">
                 <div class="col-lg-6">
-                        {% if feature.image %}
-                            <img src="#" delayedsrc="{{ feature.image }}" class="col-lg-12"/>
+                        {% if item.image %}
+                            <img src="#" delayedsrc="{{ item.image }}" class="col-lg-12"/>
                         {%  endif %}
                 </div>
                 <div class="col-lg-offset-2 col-lg-4">
-                    {%  if feature.blurb %}{{  feature.blurb }}{%  endif %}
-                    <p><a href="{{ feature.slug }}.html">Read more about {{ feature.name }} &gt;</a></p>
+                    {%  if item.blurb %}{{  item.blurb }}{%  endif %}
+                    <p><a href="{{ item.slug }}.html">Read more about {% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %} &gt;</a></p>
                 </div>
                 <p>&nbsp;</p>
             </div>
