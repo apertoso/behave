@@ -1,64 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Living Documentation</title>
-    <link href="static/bootstrap.css" rel="stylesheet"/>
-    <link href="static/cover.css" rel="stylesheet"/>
-</head>
-<body>
-    <div class="site-wrapper">
-        <div class="site-wrapper-inner">
-            <div class="cover-container">
-                <div class="masthead clearfix">
-                    <div class="inner">
-                        <h3 class="masthead-brand">{{ company_name }}</h3>
-                        <nav>
-                            <ul class="nav masthead-nav">
-                                <li class="active"><a href="index.html">Home</a></li>
-                                <li><a href="features/_index.html">Features</a></li>
-                                <li><a href="tags/_index.html">Tags</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-                <div class="inner cover">
-                    <h1 class="cover-heading">Living Documentation</h1>
-                    <table class="lead table table-hover">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Passed</th>
-                                <th>Failed</th>
-                                <th>Skipped</th>
-                                <th>Undefined</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for stat in stats %}
-                            <tr>
-                                <td>{{ stat['name'] }}</td>
-                                <td>{{ stat['summary']['passed'] }}</td>
-                                <td>{{ stat['summary']['failed'] }}</td>
-                                <td>{{ stat['summary']['skipped'] }}</td>
-                                <td>{{ stat['summary']['undefined'] }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mastfoot">
-                    <div class="inner">
-                        <p>Living documentation generated via <a href="http://colinwren.is/awesome">Colin Wren's</a> hack for  <a href="https://github.com/behave/behave">Behave</a>.<br>
-                            <a href="https://www.flickr.com/photos/oskay/6586748409">Cucumber Martini</a> photograph by <a href="https://www.flickr.com/photos/oskay/">Windell Oskay</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="static/bootstrap.js" type="text/javascript"></script>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ site.name }}</h1>
+    {{ site.desc }}
 
+    <h2>Check out</h2>
+    <ul>
+        {% for item in site.menu %}
+            <li><a href="{{ item.slug }}/index.html">{{ item.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+{% block csslevel %}{% endblock %}
+{% block homelevel %}{% endblock %}
+{% block jslevel %}{% endblock %}
+{% block bslevel %}{% endblock %}
 

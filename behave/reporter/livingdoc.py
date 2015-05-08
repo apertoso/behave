@@ -38,6 +38,7 @@ class LivingDocMetaDataMenu(object):
         if menu_type not in self._types:
             raise StandardError('Incorrect menu type passed')
         self.type = menu_type
+        self.slug = slugify_string(name)
         self.expr = re.compile(expr) if expr else None
 
 
@@ -253,6 +254,15 @@ class LivingDocReporter(Reporter):
             os.system("cp -R {src} {dst}".format(src=src, dst=dst))
         except OSError:
             raise
+
+        # render homepage
+        index_html = self.jinja_env.get_template('index.html')
+        output_dir = '{0}/{1}'.format(self.config.livingdoc_directory,
+                                       'index.html')
+        index_render = index_html.render(site=self.metadata,
+                                         metadata=self.metadata)
+        with open(output_dir, 'wb') as f:
+            f.write(index_render)
 
     def feature(self, feature):
         meta = [metadata for metadata in self.metadata.features if
