@@ -82,7 +82,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{% block homelevel %}../{% endblock %}index.html">Home</a></li>
                     {% for item in metadata.menu %}
-                        <li><a href="../{{ item.slug }}/index.html">{{ item.name }}</a></li>
+                        <li><a href="{% block navlevel%}../{% endblock %}{{ item.slug }}/index.html">{{ item.name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
