@@ -19,6 +19,12 @@ ENHANCEMENTS:
 
   * issue #301: Support default tags in configfile
 
+FIXED:
+
+  * issue #319: python-version requirements in behave.whl for Python2.6 (submitted by: darkfoxprime)
+  * issue #310: Use setuptools_behave.py with behave module
+  * issue #309: behave --lang-list fails on Python3 (and Python2)
+
 
 Version: 1.2.5 (2015-01-31)
 -------------------------------------------------------------------------------
