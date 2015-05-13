@@ -213,7 +213,7 @@ class LivingDocReporter(Reporter):
         super(LivingDocReporter, self).__init__(config)
         # setup jinja env
         self.jinja_env = Environment(loader=FileSystemLoader(
-            '/home/colinwren/dev/behave/behave/reporter/templates'))
+            '/home/colinwren/dev/behave/etc/living_doc/templates'))
 
         # setup array for features
         self.features = []
@@ -248,7 +248,7 @@ class LivingDocReporter(Reporter):
 
         # move static files into place
         # TODO: change to be relative to behave library / pass own templates
-        src = '/home/colinwren/dev/behave/behave/reporter/templates/static/'
+        src = '/home/colinwren/dev/behave/etc/living_doc/templates/static/'
         dst = self.config.livingdoc_directory + '/static/'
         try:
             os.system("cp -R {src} {dst}".format(src=src, dst=dst))
