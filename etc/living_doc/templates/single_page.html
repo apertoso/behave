@@ -16,6 +16,14 @@
                         {% endfor %}
                     </ul>
                     {%  endif %}
+                    {%  if item.scenarios %}
+                    <h4>Scenarios</h4>
+                    <ul>
+                        {% for scenario in item.scenarios %}
+                            <li><a href="../features/{{ scenario.feature.slug }}.html">{{ scenario.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {%  endif %}
                 </div>
                 <div class="col-lg-offset-2 col-lg-6">
                         {% if item.image %}
@@ -42,6 +50,14 @@
                         {% endfor %}
                     </ul>
                     {% endif %}
+                    {%  if item.scenarios %}
+                    <h4>Scenarios</h4>
+                    <ul>
+                        {% for scenario in item.scenarios %}
+                            <li><a href="../features/{{ scenario.feature.slug }}.html">{{ scenario.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {%  endif %}
                 </div>
                 <p>&nbsp;</p>
             </div>
