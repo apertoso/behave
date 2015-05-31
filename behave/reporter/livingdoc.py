@@ -366,7 +366,7 @@ class LivingDocReporter(Reporter):
                 f.write(item_render)
 
     def render_single(self, menu_item, items):
-        index_html = self.env.get_template('livingdoc_single_page.html')
+        index_html = self.env.get_template('single_page.html')
         output_dir = '{0}/{1}/'.format(self.config.livingdoc_directory,
                                         slugify_string(menu_item.name))
         index_filename = '{0}index.html'.format(output_dir)
