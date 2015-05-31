@@ -11,7 +11,6 @@ include *.ini
 include *.rst
 include *.txt
 include bin/behave*
-recursive-include behave/reporter/templates *.html
 recursive-include bin           *.py *.cmd *.sh *.zip
 recursive-include behave4cmd0   *.py
 recursive-include etc           *.xsd *.txt *.json-schema
