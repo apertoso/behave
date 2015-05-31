@@ -5,7 +5,7 @@ import errno
 import os
 import json
 import re
-from jinja2 import Template
+from jinja2 import Environment, DictLoader
 from behave.reporter.base import Reporter
 from behave.reporter.livingdoc_templates import *
 
@@ -240,6 +240,15 @@ class LivingDocReporter(Reporter):
 
     def __init__(self, config):
         super(LivingDocReporter, self).__init__(config)
+        self.env = Environment()
+        loader = DictLoader({
+            'index.html': livingdoc_index,
+            'base.html': livingdoc_base,
+            'directory_index.html': livingdoc_directory_index,
+            'directory_single.html': livingdoc_directory_single,
+            'single_page.html': livingdoc_single_page
+        })
+        self.env.loader = loader
         # setup array for features
         self.features = []
         self.tags = []
@@ -271,7 +280,7 @@ class LivingDocReporter(Reporter):
                     raise
 
         # render homepage
-        index_html = Template(livingdoc_index)
+        index_html = self.env.get_template('index.html')
         output_dir = '{0}/{1}'.format(self.config.livingdoc_directory,
                                        'index.html')
         index_render = index_html.render(site=self.metadata,
@@ -340,8 +349,8 @@ class LivingDocReporter(Reporter):
                 self.render_single(menu_item, tags)
 
     def render_directory(self, menu_item, items):
-        index_html = Template(livingdoc_directory_index.html)
-        single_html = Template(livingdoc_directory_single.html)
+        index_html = self.env.get_template('directory_index.html')
+        single_html = self.env.get_template('directory_single.html')
         output_dir = '{0}/{1}/'.format(self.config.livingdoc_directory,
                                         slugify_string(menu_item.name))
         index_filename = '{0}index.html'.format(output_dir)
@@ -357,7 +366,7 @@ class LivingDocReporter(Reporter):
                 f.write(item_render)
 
     def render_single(self, menu_item, items):
-        index_html = Template(livingdoc_single_page.html)
+        index_html = self.env.get_template('livingdoc_single_page.html')
         output_dir = '{0}/{1}/'.format(self.config.livingdoc_directory,
                                         slugify_string(menu_item.name))
         index_filename = '{0}index.html'.format(output_dir)
