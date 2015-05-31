@@ -147,6 +147,7 @@ livingdoc_directory_index = """
         {% if loop.index is odd %}
             <div class="row col-lg-12">
                 <div class="col-lg-4">
+                    <h3>{% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %}</h3>
                     {%  if item.blurb %}{{  item.blurb }}{%  endif %}
                     <p><a href="{{ item.slug }}.html">Read more about {% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %} &gt;</a></p>
                 </div>
@@ -165,6 +166,7 @@ livingdoc_directory_index = """
                         {%  endif %}
                 </div>
                 <div class="col-lg-offset-2 col-lg-4">
+                    <h3>{% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %}</h3>
                     {%  if item.blurb %}{{  item.blurb }}{%  endif %}
                     <p><a href="{{ item.slug }}.html">Read more about {% if item.title %}{{ item.title }}{% else %}{{ item.name }}{% endif %} &gt;</a></p>
                 </div>
