@@ -5,7 +5,7 @@ import errno
 import os
 import json
 import re
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 from behave.reporter.base import Reporter
 
 
@@ -240,8 +240,7 @@ class LivingDocReporter(Reporter):
     def __init__(self, config):
         super(LivingDocReporter, self).__init__(config)
         # setup jinja env
-        self.jinja_env = Environment(loader=FileSystemLoader(
-            '/Users/colinwren/Documents/Projects/libraries/behave/etc/living_doc/templates'))
+        self.jinja_env = Environment(loader=PackageLoader('behave', 'reporter/templates'))
 
         # setup array for features
         self.features = []
@@ -262,7 +261,6 @@ class LivingDocReporter(Reporter):
         # create folder for each menu item
         menu_dirs = [slugify_string(menu.name) for menu in self.metadata.menu] \
             if self.metadata and self.metadata.menu else ['features']
-        menu_dirs.append(u'static')
         for menu_dir in menu_dirs:
             output_path = '{0}/{1}/'.format(self.config.livingdoc_directory,
                                             menu_dir)
@@ -273,15 +271,6 @@ class LivingDocReporter(Reporter):
                     pass
                 else:
                     raise
-
-        # move static files into place
-        # TODO: change to be relative to behave library / pass own templates
-        src = '/Users/colinwren/Documents/Projects/libraries/behave/etc/living_doc/templates/static/'
-        dst = self.config.livingdoc_directory + '/static/'
-        try:
-            os.system("cp -R {src} {dst}".format(src=src, dst=dst))
-        except OSError:
-            raise
 
         # render homepage
         index_html = self.jinja_env.get_template('index.html')
