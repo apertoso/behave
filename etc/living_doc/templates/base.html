@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Living Documentation for {{ metadata.name }}</title>
-    <link href="{% block csslevel %}../{% endblock %}static/bootstrap.css" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"/>
     <style type="text/css">
 
         .panel{
@@ -91,8 +91,8 @@
     <div class="container">
         {% block content %}{% endblock %}
     </div>
-    <script src="{% block jslevel %}../{% endblock %}static/jquery.js" type="text/javascript"></script>
-    <script src="{% block bslevel %}../{% endblock %}static/bootstrap.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('.scenario_outline_examples >tbody tr').click(function(){
