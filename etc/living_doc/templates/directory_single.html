@@ -109,7 +109,7 @@
     <!-- <div class="container"> -->
         {% for scenario in item.scenarios %}
             {% if scenario.type=='scenario' %}
-                <div class="panel panel-default" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                <div class="panel panel-default" id="{{ scenario.slug_id }}">
                     <div class="panel-heading">
                         <div class="panel-title">
                             <h3><span class="text-muted">Scenario:</span> {{ scenario.name }}
@@ -190,13 +190,13 @@
                                 </ul>
                              </div>
                         <p>&nbsp;</p>
-                        <p><span class="pull-right"><a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
+                        <p><span class="pull-right"><a href="../features/{{ scenario.slug }}" class="btn">Link to scenario</a></span></p>
                     </div>
                 </div>
                 <p>&nbsp;</p>
             {% endif %}
             {% if scenario.type=='scenario_outline' %}
-                <div class="panel panel-default" id="{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}">
+                <div class="panel panel-default" id="{{ scenario.slug_id }}">
                     <div class="panel-heading">
                         <div class="panel-title">
                             <h3><span class="text-muted">Scenario Outline:</span> <span class="scenario_title">{{ scenario.name | e }}</span> <span class="pull-right">{% if scenario.tags %}<span class="text-muted">Tags: </span>{% for tag in scenario.tags %} <a href="../tags/{{ tag }}.html"><span class="badge btn-info">{{ tag }}</span></a> {% endfor %}  {% endif %}</span></h3>
@@ -362,7 +362,7 @@
                             {% endfor %}
                         </div>
                         <p>&nbsp;</p>
-                        <p><span class="pull-right"><a href="..{{ path }}#{{ scenario.name | replace('.','_') | replace(' ','_') | replace(':', '_') | replace('(','') | replace(')','') }}" class="btn">Link to scenario</a></span></p>
+                        <p><span class="pull-right"><a href="../features/{{ scenario.slug }}" class="btn">Link to scenario</a></span></p>
                     </div>
                 </div>
                 <p>&nbsp;</p>

@@ -20,7 +20,7 @@
                     <h4>Scenarios</h4>
                     <ul>
                         {% for scenario in item.scenarios %}
-                            <li><a href="../features/{{ scenario.feature.slug }}.html">{{ scenario.name }}</a></li>
+                            <li><a href="../features/{{ scenario.slug }}">{{ scenario.name }}</a></li>
                         {% endfor %}
                     </ul>
                     {%  endif %}
@@ -54,7 +54,7 @@
                     <h4>Scenarios</h4>
                     <ul>
                         {% for scenario in item.scenarios %}
-                            <li><a href="../features/{{ scenario.feature.slug }}.html">{{ scenario.name }}</a></li>
+                            <li><a href="../features/{{ scenario.slug }}">{{ scenario.name }}</a></li>
                         {% endfor %}
                     </ul>
                     {%  endif %}

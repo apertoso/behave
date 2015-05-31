@@ -182,10 +182,37 @@ class LivingDocFeature(object):
             self.slug = slugify_string(self.name)
 
 
+class LivingDocScenario(object):
+
+    def __init__(self, scenario, metadata):
+        self.__dict__ = scenario.__dict__.copy()
+        self.type = scenario.type if scenario.type else False
+        self.duration = scenario.duration if scenario.duration else False
+        self.status = scenario.status if scenario.status else False
+        if scenario.type == 'scenario_outline':
+            self.scenarios = scenario.scenarios if scenario.scenarios else False
+        if len(metadata) > 0:
+            meta = metadata[0]
+            self.image = meta.image
+            self.other_resources = meta.links
+            self.blurb = meta.desc
+            self.slug = '{feature}.html#{scenario}'.format(feature=slugify_string(self.feature.name),
+                                                            scenario=slugify_string(self.name))
+            self.slug_id = slugify_string(self.name)
+        else:
+            self.image = None
+            self.other_resources = None
+            self.blurb = None
+            self.slug = '{feature}.html#{scenario}'.format(feature=slugify_string(self.feature.name),
+                                                            scenario=slugify_string(self.name))
+            self.slug_id = slugify_string(self.name)
+
+
 class LivingDocTag(object):
 
     def __init__(self, tag, metadata):
         self.name = tag
+        self.slug = slugify_string(self.name)
         self.features = []
         self.scenarios = []
         if len(metadata) > 0:
@@ -196,12 +223,13 @@ class LivingDocTag(object):
             self.blurb = meta.desc
             self.desc = meta.long_desc
             self.other_resources = meta.links
+            self.slug = slugify_string(self.title if self.title else self.name)
         else:
             self.image = None
             self.blurb = None
             self.desc = None
             self.other_resource = None
-        self.slug = slugify_string(self.title if self.title else self.name)
+
 
 
 class LivingDocReporter(Reporter):
@@ -213,7 +241,7 @@ class LivingDocReporter(Reporter):
         super(LivingDocReporter, self).__init__(config)
         # setup jinja env
         self.jinja_env = Environment(loader=FileSystemLoader(
-            '/home/colinwren/dev/behave/etc/living_doc/templates'))
+            '/Users/colinwren/Documents/Projects/libraries/behave/etc/living_doc/templates'))
 
         # setup array for features
         self.features = []
@@ -248,7 +276,7 @@ class LivingDocReporter(Reporter):
 
         # move static files into place
         # TODO: change to be relative to behave library / pass own templates
-        src = '/home/colinwren/dev/behave/etc/living_doc/templates/static/'
+        src = '/Users/colinwren/Documents/Projects/libraries/behave/etc/living_doc/templates/static/'
         dst = self.config.livingdoc_directory + '/static/'
         try:
             os.system("cp -R {src} {dst}".format(src=src, dst=dst))
@@ -266,9 +294,8 @@ class LivingDocReporter(Reporter):
 
     def feature(self, feature):
         meta = [metadata for metadata in self.metadata.features if
-                metadata.name == feature.name]
+                metadata.name == feature.name] if self.metadata and self.metadata.features else []
         living_doc_feature = LivingDocFeature(feature, meta)
-        self.features.append(living_doc_feature)
         for tag in living_doc_feature.tags:
             get_tag = self.get_tag_obj(tag)
             if get_tag:
@@ -279,17 +306,22 @@ class LivingDocReporter(Reporter):
                                                 metadata.name == tag])
                 tag_object.features.append(living_doc_feature)
                 self.tags.append(tag_object)
+        living_doc_scenarios = []
         for scenario in living_doc_feature.scenarios:
+            living_doc_scenario = LivingDocScenario(scenario, [])
+            living_doc_scenarios.append(living_doc_scenario)
             for tag in scenario.tags:
                 get_tag = self.get_tag_obj(tag)
                 if get_tag:
-                    get_tag.scenarios.append(scenario)
+                    get_tag.scenarios.append(living_doc_scenario)
                 else:
-                    tag_object = LivingDocTag(tag, [metadata for metadata in
-                                                    self.metadata.tags if
-                                                    metadata.name == tag])
-                    tag_object.scenarios.append(scenario)
+                    meta_tag = [metadata for metadata in self.metadata.tags if metadata.name == tag] \
+                        if self.metadata and self.metadata.tags else []
+                    tag_object = LivingDocTag(tag, meta_tag)
+                    tag_object.scenarios.append(living_doc_scenario)
                     self.tags.append(tag_object)
+        living_doc_feature.scenarios = living_doc_scenarios
+        self.features.append(living_doc_feature)
 
     def get_tag_obj(self, tag_name):
         for tag_obj in self.tags:

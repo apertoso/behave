@@ -1,0 +1,36 @@
+{
+    "config":{
+        "site_name": "Living Documentation",
+        "logo_url": "",
+        "site_desc": "<p>A demo project to show how to generate living documentation with Behave.</p>",
+        "menu": [
+            {
+                "name": "Features",
+                "type": "feature"
+            },
+            {
+                "name": "Setup",
+                "type": "tag",
+                "expr": "^setup$"
+            }
+        ]
+    },
+    "features": [
+        {
+            "name": "Background",
+            "image": "http://a.link/to/image/to/illustrate/feature",
+            "links": []
+        }
+    ],
+    "tags": [
+        {
+
+            "name": "setup",
+            "title": "Setup",
+            "image": "http://a.link/to/image/to/illustrate/tag",
+            "desc": "<p>Creating a task helps to get work done and makes it easier to see what people are doing.</p>",
+            "long_desc": "<p>Task creation in Odoo is super easy. Here's some advantages:</p><ul><li>Track time spent on project</li><li>Set deadlines</li><li>Assign a reviewer</li></ul>",
+            "links": []
+        }
+    ]
+}
