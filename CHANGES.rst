@@ -10,6 +10,7 @@ GOALS:
 
 DOCUMENTATION:
 
+  * pull #327: Fix typo in Django doc (provided by: nikolas)
   * pull #321: Update Django integration (provided by: bittner, contains: #315, #316)
   * FIX: cmdline/config-param doc-generator, avoid duplicated param entries (related to: #318)
   * issue #317: Update comparison: lettuce tags (provided by: ramiabughazaleh)
@@ -22,6 +23,10 @@ ENHANCEMENTS:
 
   * issue #301: Support default tags in configfile
   * issue #299: Runner can continue after a failed step (same as: #314)
+
+CHANGES:
+
+  * parser: language comment in feature file has higher priority than --lang option (related to: #334). 
 
 FIXED:
 
